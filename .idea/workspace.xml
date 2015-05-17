@@ -3,11 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="784fc501-b216-43d8-aab3-b1f9cf74f528" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/Autocomplete.jsx" afterPath="$PROJECT_DIR$/src/js/components/Autocomplete.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/pages/HomePage.jsx" afterPath="$PROJECT_DIR$/src/js/pages/HomePage.jsx" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/app.js" afterPath="$PROJECT_DIR$/static/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/css/main.css" afterPath="$PROJECT_DIR$/static/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/scss/main.scss" afterPath="$PROJECT_DIR$/src/scss/main.scss" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="nsettle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -51,8 +47,8 @@
       <file leaf-file-name="Autocomplete.jsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/components/Autocomplete.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-0.93050194">
-              <caret line="35" column="73" selection-start-line="35" selection-start-column="73" selection-end-line="35" selection-end-column="73" />
+            <state vertical-scroll-proportion="0.47876447">
+              <caret line="100" column="9" selection-start-line="100" selection-start-column="9" selection-end-line="100" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -471,8 +467,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/components/Autocomplete.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.93050194">
-          <caret line="35" column="73" selection-start-line="35" selection-start-column="73" selection-end-line="35" selection-end-column="73" />
+        <state vertical-scroll-proportion="0.47876447">
+          <caret line="100" column="9" selection-start-line="100" selection-start-column="9" selection-end-line="100" selection-end-column="9" />
           <folding />
         </state>
       </provider>

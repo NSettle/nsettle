@@ -27521,34 +27521,42 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     else if (ev.which == 38) {
       ev.preventDefault();
       // Up
-      if(this.state.selectedIndex == -1 || this.state.selectedIndex == 0)
+      if(this.state.suggestionList.length>0)
       {
-        this.setState({
-          selectedIndex:this.state.suggestionList.length-1,
-          keyword:this.state.suggestionList[this.state.suggestionList.length-1].name
-        })
-      }else{
-        this.setState({
-          selectedIndex:--this.state.selectedIndex,
-          keyword:this.state.suggestionList[this.state.selectedIndex].name
-        })
+        if(this.state.selectedIndex == -1 || this.state.selectedIndex == 0)
+        {
+          this.setState({
+            selectedIndex:this.state.suggestionList.length-1,
+            keyword:this.state.suggestionList[this.state.suggestionList.length-1].name
+          })
+        }else{
+          this.setState({
+            selectedIndex:--this.state.selectedIndex,
+            keyword:this.state.suggestionList[this.state.selectedIndex].name
+          })
+        }
       }
+
     }
     else if (ev.which == 40) {
       ev.preventDefault();
       // Down
-      if(this.state.selectedIndex == -1 || this.state.selectedIndex == this.state.suggestionList.length-1)
+      if(this.state.suggestionList.length>0)
       {
-        this.setState({
-          selectedIndex:0,
-          keyword:this.state.suggestionList[0].name
-        })
-      }else{
-        this.setState({
-          selectedIndex:++this.state.selectedIndex,
-          keyword:this.state.suggestionList[this.state.selectedIndex].name
-        })
+        if(this.state.selectedIndex == -1 || this.state.selectedIndex == this.state.suggestionList.length-1)
+        {
+          this.setState({
+            selectedIndex:0,
+            keyword:this.state.suggestionList[0].name
+          })
+        }else{
+          this.setState({
+            selectedIndex:++this.state.selectedIndex,
+            keyword:this.state.suggestionList[this.state.selectedIndex].name
+          })
+        }
       }
+
     }
   },
 
@@ -27576,11 +27584,11 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     this.props.onAction(item);
     this.refs.autocomplete.getDOMNode().focus();
 
-    var newIngredients = R.clone(this.state.suggestionList).filter(function(i) {
-      return i.id != item.id;
-    });
+    //var newIngredients = R.clone(this.state.suggestionList).filter(function(i) {
+    //  return i.id != item.id;
+    //});
 
-    this.setState({ suggestionList: newIngredients, suggestionOpen: false, selectedIndex: -1});
+    this.setState({ suggestionList: [], suggestionOpen: false, selectedIndex: -1});
     // -> Set focus on input
   },
 

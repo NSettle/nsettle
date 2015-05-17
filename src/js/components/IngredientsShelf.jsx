@@ -3,7 +3,7 @@
 
 var React = require('react/addons')
 
-var IngredientShelf = React.createClass({
+var IngredientsShelf = React.createClass({
 
     render: function () {
 
@@ -14,4 +14,4 @@ var IngredientShelf = React.createClass({
 
 });
 
-module.exports = IngredientShelf;
+module.exports = IngredientsShelf;

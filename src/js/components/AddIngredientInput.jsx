@@ -1,6 +1,6 @@
 var React = require('react'),
     Autocomplete = require('../components/Autocomplete.jsx'),
-    IngredientShelf  = require('../components/IngredientShelf.jsx');
+    IngredientsShelf  = require('../components/IngredientsShelf.jsx');
 
 var allIngredients = [];
 

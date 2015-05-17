@@ -1,13 +1,12 @@
 var React = require('react'),
+    R = require('ramda'),
     Autocomplete = require('../components/Autocomplete.jsx'),
     IngredientsShelf  = require('../components/IngredientsShelf.jsx');
-
-var allIngredients = [{id:0,name:"alpha",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:1,name:"beta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:2,name:"gama",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:3,name:"teta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}];
 
 var AddIngredientInput = React.createClass({
 
     //added ingredient array
-    getInitialState:function(){
+    getInitialState: function(){
         return {
             addedIngredients:[]
         }
@@ -17,19 +16,28 @@ var AddIngredientInput = React.createClass({
 
     //add to added ingredient array function
 
-    _addIngredient:function(){
-        //remember to add focus to input after ingredient is added
+    _addIngredient: function(item) {
+        var newIngredients = R.clone(this.state.addedIngredients);
+        newIngredients.push(item);
+        this.setState({ addedIngredients: newIngredients });
     },
 
-    _removeIngredient:function(){
-        //remember to add focus to input after ingredient is added
+    _removeIngredient: function(id) {
+        var newIngredients = R.clone(this.state.addedIngredients).filter(function(i) {
+            return i.id != id;
+        });
+
+        this.setState({ addedIngredients: newIngredients });
     },
 
     render: function() {
+
+        console.log(this.state.addedIngredients);
+
         return (
             <div>
-                <IngredientsShelf  onAction={this._removeIngredient} ingredients={this.state.addedIngredients}/>
-                <Autocomplete onAction={this._addIngredient} suggestionList={allIngredients} />
+                <IngredientsShelf onAction={ this._removeIngredient } ingredients={ this.state.addedIngredients }/>
+                <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } />
             </div>
         );
     }

@@ -1,6 +1,6 @@
 var React = require('react'),
-	Component = require('./components/Component.jsx');
+	HomePage = require('./pages/HomePage.jsx');
 
 window.onload = function() {
-	React.render(<Component />, document.getElementById('content'));
+	React.render(<HomePage />, document.getElementById('content'));
 }

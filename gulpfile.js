@@ -1,5 +1,3 @@
-'use strict';
-
 var gulp = require('gulp'),
     browserify = require('browserify'),
     watchify = require('watchify'),

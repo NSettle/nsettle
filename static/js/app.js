@@ -1,13 +1,13 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var React = require('react'),
-	Component = require('./components/Component.jsx');
+	HomePage = require('./pages/HomePage.jsx');
 
 window.onload = function() {
-	React.render(React.createElement(Component, null), document.getElementById('content'));
+	React.render(React.createElement(HomePage, null), document.getElementById('content'));
 }
 
 
-},{"./components/Component.jsx":158,"react":157}],2:[function(require,module,exports){
+},{"./pages/HomePage.jsx":159,"react":157}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -19820,30 +19820,41 @@ module.exports = require('./lib/React');
 },{"./lib/React":30}],158:[function(require,module,exports){
 var React = require('react');
 
-var Component = React.createClass({displayName: "Component",
-  getInitialState: function() {
-    return {secondsElapsed: 0};
-  },
-  tick: function() {
-    this.setState({secondsElapsed: this.state.secondsElapsed + 1});
-  },
-  componentDidMount: function() {
-    this.interval = setInterval(this.tick, 1000);
-  },
-  componentWillUnmount: function() {
-    clearInterval(this.interval);
-  },
+var Autocomplete = React.createClass({displayName: "Autocomplete",
   render: function() {
     return (
-    	React.createElement("div", {className: "row"}, 
-      		React.createElement("div", {className: "col-md-6"}, "Peniano: ", this.state.secondsElapsed), 
-      		React.createElement("div", {className: "col-md-6"}, "Peniana")
+    	React.createElement("div", null, 
+      		React.createElement("input", {type: "text"})
       )
     );
   }
 });
 
-module.exports = Component;
+module.exports = Autocomplete;
 
 
-},{"react":157}]},{},[1]);
+},{"react":157}],159:[function(require,module,exports){
+var React = require('react'),
+    Autocomplete = require('../components/Autocomplete.jsx');
+
+var HomePage = React.createClass({displayName: "HomePage",
+  render: function() {
+    return (
+      React.createElement("div", {className: "container"}, 
+      	React.createElement("div", {className: "row"}, 
+        		React.createElement("div", {className: "col-md-12 text-center"}, 
+
+              React.createElement("h1", null, "Welome to Cock Wizard!"), 
+              React.createElement(Autocomplete, null)
+
+            )
+        )
+      )
+    );
+  }
+});
+
+module.exports = HomePage;
+
+
+},{"../components/Autocomplete.jsx":158,"react":157}]},{},[1]);

@@ -16,17 +16,19 @@ var $__0=
 var App = React.createClass({displayName: "App",
 	render: function () {
 		return (
-			React.createElement("div", {className: "App"}, 
+			React.createElement("div", null, 
 				React.createElement(RouteHandler, null)
 			)
 		);
 	}
 });
 
+
+//TODO still have to fix about test route
 var routes = (
-	React.createElement(Route, {handler: App, path: "/"}, 
-		React.createElement(DefaultRoute, {handler: HomePage}), 
-		React.createElement(Route, {name: "recipe", path: "/about", handler: RecipePage})
+	React.createElement(Route, {name: "app", handler: App, path: "/"}, 
+		React.createElement(DefaultRoute, {name: "home", handler: HomePage}), 
+		React.createElement(Route, {name: "about", path: "about", handler: RecipePage})
 	)
 );
 

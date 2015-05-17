@@ -15,17 +15,19 @@ var {
 var App = React.createClass({
 	render: function () {
 		return (
-			<div className="App">
+			<div>
 				<RouteHandler/>
 			</div>
 		);
 	}
 });
 
+
+//TODO still have to fix about test route
 var routes = (
-	<Route handler={App} path="/">
-		<DefaultRoute handler={HomePage}/>
-		<Route name="recipe" path="/about" handler={RecipePage}/>
+	<Route name="app" handler={App} path="/">
+		<DefaultRoute name="home" handler={HomePage}/>
+		<Route name="about" path="about" handler={RecipePage}/>
 	</Route>
 );
 

@@ -34,14 +34,6 @@ gulp.task('sass', function() {
         .pipe($.size());
 });
 
-gulp.task('stylus', function() {
-    return gulp.src(['app/styles/**/*.styl'])
-        .pipe($.stylus())
-        .pipe($.autoprefixer('last 1 version'))
-        .pipe(gulp.dest('dist/styles'))
-        .pipe($.size());
-});
-
 
 var bundler = watchify(browserify({
     entries: [sourceFile],
@@ -184,10 +176,10 @@ gulp.task('watch', ['html', 'fonts', 'bundle'], function() {
 
     gulp.watch(['app/styles/**/*.scss', 'app/styles/**/*.css'], ['styles', reload]);
 
-    
+
         // Watch .jade files
         gulp.watch('app/template/**/*.jade', ['jade', 'html', reload]);
-    
+
 
     // Watch image files
     gulp.watch('app/images/**/*', reload);

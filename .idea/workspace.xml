@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="784fc501-b216-43d8-aab3-b1f9cf74f528" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/js/components/AddIngredientInput.jsx" afterPath="$PROJECT_DIR$/src/js/components/AddIngredientInput.jsx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/static/js/app.js" afterPath="$PROJECT_DIR$/static/js/app.js" />
     </list>
     <ignored path="nsettle.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -57,8 +56,8 @@
       <file leaf-file-name="AddIngredientInput.jsx" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/js/components/AddIngredientInput.jsx">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.2238806">
-              <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.07462686">
+              <caret line="4" column="298" selection-start-line="4" selection-start-column="298" selection-end-line="4" selection-end-column="298" />
               <folding />
             </state>
           </provider>
@@ -454,8 +453,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/js/components/AddIngredientInput.jsx">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.2238806">
-          <caret line="12" column="9" selection-start-line="12" selection-start-column="9" selection-end-line="12" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.07462686">
+          <caret line="4" column="298" selection-start-line="4" selection-start-column="298" selection-end-line="4" selection-end-column="298" />
           <folding />
         </state>
       </provider>

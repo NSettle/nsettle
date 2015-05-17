@@ -21877,7 +21877,7 @@ var React = require('react'),
     Autocomplete = require('../components/Autocomplete.jsx'),
     IngredientsShelf  = require('../components/IngredientsShelf.jsx');
 
-var allIngredients = [{name:"alpha",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"beta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"gama",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"teta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}];
+var allIngredients = [{id:0,name:"alpha",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:1,name:"beta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:2,name:"gama",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {id:3,name:"teta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}];
 
 var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 

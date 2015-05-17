@@ -8,7 +8,7 @@ var HomePage = React.createClass({
       	<div className="row">
         		<div className="col-md-12 text-center">
 
-              <h1>Welome to Cock Wizard!</h1>
+              <h1>Welome to Cocktail Wizard!</h1>
               <AddIngredientInput />
 
             </div>

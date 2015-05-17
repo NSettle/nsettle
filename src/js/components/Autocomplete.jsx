@@ -17,19 +17,50 @@ var Autocomplete = React.createClass({
     return {
       suggestionList: [],
       suggestionOpen: false,
-      selectedIndex: -1
+      selectedIndex: -1,
+      keyword:''
     }
   },
   
   _handleKey: function(ev) {
+
     if (ev.which == 13) {
+      ev.preventDefault();
       // Enter
+      this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      console.log('enter')
     }
     else if (ev.which == 38) {
+      ev.preventDefault();
       // Up
+      if(this.state.selectedIndex == -1 || this.state.selectedIndex == 0)
+      {
+        this.setState({
+          selectedIndex:this.state.suggestionList.length-1,
+          keyword:this.state.suggestionList[this.state.suggestionList.length-1].name
+        })
+      }else{
+        this.setState({
+          selectedIndex:--this.state.selectedIndex,
+          keyword:this.state.suggestionList[this.state.selectedIndex].name
+        })
+      }
     }
     else if (ev.which == 40) {
+      ev.preventDefault();
       // Down
+      if(this.state.selectedIndex == -1 || this.state.selectedIndex == this.state.suggestionList.length-1)
+      {
+        this.setState({
+          selectedIndex:0,
+          keyword:this.state.suggestionList[0].name
+        })
+      }else{
+        this.setState({
+          selectedIndex:++this.state.selectedIndex,
+          keyword:this.state.suggestionList[this.state.selectedIndex].name
+        })
+      }
     }
   },
 
@@ -49,7 +80,7 @@ var Autocomplete = React.createClass({
       }
     }, this.props.suggestionList);
 
-    this.setState({ suggestionOpen: true, suggestionList: suggestionList });
+    this.setState({ suggestionOpen: true, suggestionList: suggestionList, keyword:autocomplete.value });
   },
 
   //receive props as an array with all the suggestion
@@ -61,23 +92,23 @@ var Autocomplete = React.createClass({
       return i.id != item.id;
     });
 
-    this.setState({ suggestionList: newIngredients });
+    this.setState({ suggestionList: newIngredients, suggestionOpen: false, selectedIndex: -1});
     // -> Set focus on input
   },
 
   render: function() {
-
     // create list from suggestionList
-    // var list = this.state.suggestionList.map()
+    console.log('Autocomplete State:',this.state)
+
     var self = this;
 
     var list = this.state.suggestionList.map(function(item, idx) {
-      return <ListItem key={'ListItem-'+idx} item={ item } onAction={ self._onAction } />;
+      return <ListItem key={'ListItem-'+idx} item={ item } onAction={ self._onAction } selected={self.state.selectedIndex == idx? true:false} />;
     })
 
     return (
     	<div id="autocomplete">
-      		<input type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyPress={ this._handleKey } />
+      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyDown={ this._handleKey } />
             { this.state.suggestionOpen ? <ul>{ list }</ul> : null }
         </div>
     );
@@ -87,7 +118,7 @@ var Autocomplete = React.createClass({
 var ListItem = React.createClass({
   render:function(){
     return (
-        <li onClick={ this.props.onAction.bind(null, this.props.item) }>
+        <li onClick={ this.props.onAction.bind(null, this.props.item) } className={this.props.selected? 'selected':null}>
         <img src={ this.props.item.image } width="30" />
         { this.props.item.name }
         </li>

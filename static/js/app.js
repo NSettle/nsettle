@@ -21877,7 +21877,7 @@ var React = require('react'),
     Autocomplete = require('../components/Autocomplete.jsx'),
     IngredientsShelf  = require('../components/IngredientsShelf.jsx');
 
-var allIngredients = [];
+var allIngredients = [{name:"alpha",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"beta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"gama",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}, {name:"teta",image:"http://cdn2.thegloss.com/wp-content/uploads/2011/02/drink.jpg"}];
 
 var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 
@@ -21896,10 +21896,14 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         //remember to add focus to input after ingredient is added
     },
 
+    _removeIngredient:function(){
+        //remember to add focus to input after ingredient is added
+    },
+
     render: function() {
         return (
             React.createElement("div", null, 
-                React.createElement(IngredientsShelf, {ingredients: this.state.addedIngredients}), 
+                React.createElement(IngredientsShelf, {onAction: this._removeIngredient, ingredients: this.state.addedIngredients}), 
                 React.createElement(Autocomplete, {onAction: this._addIngredient, suggestionList: allIngredients})
             )
         );

@@ -29,6 +29,8 @@ var Autocomplete = React.createClass({
       return i.id;
     }, this.props.exclude);
 
+    console.dir(selectedList)
+
     // -> Set up a counter in the future for max objects
     var suggestionList = R.filter(function(i) {
       if (i.name.indexOf(ev.target.value) > -1 && selectedList.indexOf(i.id) <= -1) {
@@ -43,13 +45,19 @@ var Autocomplete = React.createClass({
   _onAction: function(item) {
     this.props.onAction(item);
     this.refs.autocomplete.getDOMNode().focus();
+
+    var newIngredients = R.clone(this.state.suggestionList).filter(function(i) {
+      return i.id != item.id;
+    });
+
+    this.setState({ suggestionList: newIngredients });
     // -> Set focus on input
   },
   _toggleInput: function(bool) {
-    var self = this;
-    setTimeout(function() {
-      self.setState({ suggestionOpen: bool });
-    }, 10);
+    //var self = this;
+    //setTimeout(function() {
+    //  self.setState({ suggestionOpen: bool });
+    //}, 10);
   },
 
   render: function() {

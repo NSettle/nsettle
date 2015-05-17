@@ -1,7 +1,18 @@
 var React = require('react'),
-    R = require('ramda');
+    R = require('ramda'),
+    ClickOutside = require('react-onclickoutside');
 
 var Autocomplete = React.createClass({
+
+  mixins: [
+    ClickOutside
+  ],
+
+  handleClickOutside: function(e) {
+    this.setState({ suggestionOpen: false });
+  },
+
+
   getInitialState: function() {
     return {
       suggestionList: [],
@@ -22,18 +33,18 @@ var Autocomplete = React.createClass({
     }
   },
 
-  _onChange: function(ev) {
+  _searchSuggestions: function() {
     // set a new state for suggestionList with the filtered array
+
+    var autocomplete = this.refs.autocomplete.getDOMNode();
     
     var selectedList = R.map(function(i) {
       return i.id;
     }, this.props.exclude);
 
-    console.dir(selectedList)
-
     // -> Set up a counter in the future for max objects
     var suggestionList = R.filter(function(i) {
-      if (i.name.indexOf(ev.target.value) > -1 && selectedList.indexOf(i.id) <= -1) {
+      if (i.name.indexOf(autocomplete.value) > -1 && selectedList.indexOf(i.id) <= -1) {
         return i;
       }
     }, this.props.suggestionList);
@@ -53,12 +64,6 @@ var Autocomplete = React.createClass({
     this.setState({ suggestionList: newIngredients });
     // -> Set focus on input
   },
-  _toggleInput: function(bool) {
-    //var self = this;
-    //setTimeout(function() {
-    //  self.setState({ suggestionOpen: bool });
-    //}, 10);
-  },
 
   render: function() {
 
@@ -66,15 +71,15 @@ var Autocomplete = React.createClass({
     // var list = this.state.suggestionList.map()
     var self = this;
 
-    var list = this.state.suggestionList.map(function(item) {
-      return <ListItem item={ item } onAction={ self._onAction } />;
+    var list = this.state.suggestionList.map(function(item, idx) {
+      return <ListItem key={'ListItem-'+idx} item={ item } onAction={ self._onAction } />;
     })
 
     return (
-    	<div>
-      		<input type="text" onBlur={ this._toggleInput.bind(null, false) } onFocus={ this._toggleInput.bind(null, true) } ref="autocomplete" onChange={this._onChange} onKeyPress={ this._handleKey } />
+    	<div id="autocomplete">
+      		<input type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyPress={ this._handleKey } />
             { this.state.suggestionOpen ? <ul>{ list }</ul> : null }
-      </div>
+        </div>
     );
   }
 });

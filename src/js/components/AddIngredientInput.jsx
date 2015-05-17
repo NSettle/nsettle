@@ -32,8 +32,6 @@ var AddIngredientInput = React.createClass({
 
     render: function() {
 
-        console.log(this.state.addedIngredients);
-
         return (
             <div>
                 <IngredientsShelf onAction={ this._removeIngredient } ingredients={ this.state.addedIngredients }/>

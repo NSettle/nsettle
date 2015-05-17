@@ -7,15 +7,14 @@ var IngredientsShelf = React.createClass({
 		};
 	},
 	componentWillReceiveProps: function(props) {
-		console.log("props!", props);
 		this.setState({ ingredients: props.ingredients });
 	},
 
 	render: function() {
 
 		var self = this;
-		var tags = this.state.ingredients.map(function(ingredient) {
-			return <IngredientItem ingredient={ ingredient } onAction={ self.props.onAction } />
+		var tags = this.state.ingredients.map(function(ingredient,idx) {
+			return <IngredientItem key={'IngredientItem-'+idx} ingredient={ ingredient } onAction={ self.props.onAction } />
 		});
 
 		return <div>

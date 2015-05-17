@@ -1,5 +1,5 @@
 var React = require('react'),
-    Autocomplete = require('../components/Autocomplete.jsx');
+    AddIngredientInput = require('../components/AddIngredientInput.jsx');
 
 var HomePage = React.createClass({
   render: function() {
@@ -9,7 +9,7 @@ var HomePage = React.createClass({
         		<div className="col-md-12 text-center">
 
               <h1>Welome to Cock Wizard!</h1>
-              <Autocomplete />
+              <AddIngredientInput />
 
             </div>
         </div>

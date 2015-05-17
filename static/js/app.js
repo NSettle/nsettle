@@ -7,7 +7,7 @@ window.onload = function() {
 }
 
 
-},{"./pages/HomePage.jsx":159,"react":157}],2:[function(require,module,exports){
+},{"./pages/HomePage.jsx":160,"react":157}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -19818,24 +19818,97 @@ module.exports = warning;
 module.exports = require('./lib/React');
 
 },{"./lib/React":30}],158:[function(require,module,exports){
+var React = require('react'),
+    Autocomplete = require('../components/Autocomplete.jsx');
+
+var allIngredients = [{},{},{}]
+
+var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
+
+    //added ingredient array
+    getInitialState:function(){
+        return {
+            addedIngredients:[]
+        }
+    },
+
+    //submit function
+
+    //add to added ingredient array function
+
+    _addIngredient:function(){
+        //remember to add focus to input after ingredient is added
+    },
+
+    render: function() {
+        return (
+            React.createElement("div", null, 
+
+                React.createElement(Autocomplete, {onAction: this._addIngredient, suggestionList: allIngredients})
+            )
+        );
+    }
+});
+
+module.exports = AddIngredientInput;
+
+
+},{"../components/Autocomplete.jsx":159,"react":157}],159:[function(require,module,exports){
 var React = require('react');
 
 var Autocomplete = React.createClass({displayName: "Autocomplete",
+
+  getInitialState: function(){
+    return {
+      suggestionList: this.props.suggestionList,
+      suggestionOpen:false
+    }
+  },
+
+  _onChange:function(){
+    //set a new state for suggestionList with the filtered array
+  },
+
+  //receive as props an array with all the suggestion
+
+  _onAction:function(){
+    this.props.onAction()
+    //set focus on input
+  },
+
   render: function() {
+
+    // create list from suggestionList
+    // var list = this.state.suggestionList.map()
+
+
     return (
     	React.createElement("div", null, 
-      		React.createElement("input", {type: "text"})
+      		React.createElement("input", {type: "text", onChange: this._onChange, onAction: this._onAction}), 
+            React.createElement("ul", null, 
+              "//render list"
+            )
       )
     );
   }
 });
 
+var ListItem = React.createClass({displayName: "ListItem",
+
+
+  render:function(){
+    return (
+        React.createElement("li", {onClick: this.props.onAction.bind(this)})
+    )
+  }
+})
+
 module.exports = Autocomplete;
 
 
-},{"react":157}],159:[function(require,module,exports){
+},{"react":157}],160:[function(require,module,exports){
 var React = require('react'),
-    Autocomplete = require('../components/Autocomplete.jsx');
+    AddIngredientInput = require('../components/AddIngredientInput.jsx');
 
 var HomePage = React.createClass({displayName: "HomePage",
   render: function() {
@@ -19845,7 +19918,7 @@ var HomePage = React.createClass({displayName: "HomePage",
         		React.createElement("div", {className: "col-md-12 text-center"}, 
 
               React.createElement("h1", null, "Welome to Cock Wizard!"), 
-              React.createElement(Autocomplete, null)
+              React.createElement(AddIngredientInput, null)
 
             )
         )
@@ -19857,4 +19930,4 @@ var HomePage = React.createClass({displayName: "HomePage",
 module.exports = HomePage;
 
 
-},{"../components/Autocomplete.jsx":158,"react":157}]},{},[1]);
+},{"../components/AddIngredientInput.jsx":158,"react":157}]},{},[1]);

@@ -8,9 +8,19 @@ var HomePage = React.createClass({
       	<div className="row">
         		<div className="col-md-12 text-center">
 
-              <h1>Welcome to Cocktail Wizard!</h1>
-              <AddIngredientInput />
+              <div className="overlay"></div>
+              <video autoPlay loop poster="static/img/background.jpg" id="bgvideo">
+                <source src="static/img/bartender.mp4" type="video/mp4"></source>
+              </video>
 
+              <img className="top-buffer-60" src="static/img/logo-glyph.png" width="120" />
+              <h1 className="landing">
+                Welcome to<br />
+                <strong>Cocktail Wizard!</strong>
+              </h1>
+              <div className="top-buffer-40 landing-autocomplete">
+                <AddIngredientInput placeholder="add an ingredient..." />
+              </div>
             </div>
         </div>
       </div>

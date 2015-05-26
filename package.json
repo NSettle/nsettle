@@ -2,10 +2,15 @@
   "name": "cocktailwizard",
   "version": "0.0.0",
   "dependencies": {
+    "after": "^0.8.1",
+    "array-slice": "^0.2.3",
+    "browserify": "^10.2.1",
+    "fill-range": "^2.2.2",
     "gulp-install": "^0.4.0",
     "ramda": "^0.14.0",
     "react-onclickoutside": "^0.2.4",
-    "react-router": "^0.13.3"
+    "react-router": "^0.13.3",
+    "utf8": "^2.1.0"
   },
   "devDependencies": {
     "browser-sync": "latest",

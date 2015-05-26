@@ -116,8 +116,8 @@ var Autocomplete = React.createClass({
 
     return (
     	<div id="autocomplete">
-      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyDown={ this._handleKey } />
-            { this.state.suggestionOpen ? <ul>{ list }</ul> : null }
+      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyDown={ this._handleKey } placeholder={ this.props.placeholder } />
+            { this.state.suggestionOpen ? <ul className="autocomplete-list">{ list }</ul> : null }
         </div>
     );
   }

@@ -94,7 +94,7 @@ process.nextTick = function (fun) {
         }
     }
     queue.push(new Item(fun, args));
-    if (!draining) {
+    if (queue.length === 1 && !draining) {
         setTimeout(drainQueue, 0);
     }
 };
@@ -30468,7 +30468,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         return (
             React.createElement("div", null, 
                 React.createElement(IngredientsShelf, {onAction:  this._removeIngredient, ingredients:  this.state.addedIngredients}), 
-                React.createElement(Autocomplete, {onAction:  this._addIngredient, exclude:  this.state.addedIngredients, suggestionList:  allIngredients })
+                React.createElement(Autocomplete, {onAction:  this._addIngredient, exclude:  this.state.addedIngredients, suggestionList:  allIngredients, placeholder:  this.props.placeholder})
             )
         );
     }
@@ -30596,8 +30596,8 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
 
     return (
     	React.createElement("div", {id: "autocomplete"}, 
-      		React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete", onChange: this._searchSuggestions, onKeyDown:  this._handleKey}), 
-             this.state.suggestionOpen ? React.createElement("ul", null,  list ) : null
+      		React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete", onChange: this._searchSuggestions, onKeyDown:  this._handleKey, placeholder:  this.props.placeholder}), 
+             this.state.suggestionOpen ? React.createElement("ul", {className: "autocomplete-list"},  list ) : null
         )
     );
   }
@@ -30666,9 +30666,19 @@ var HomePage = React.createClass({displayName: "HomePage",
       	React.createElement("div", {className: "row"}, 
         		React.createElement("div", {className: "col-md-12 text-center"}, 
 
-              React.createElement("h1", null, "Welcome to Cocktail Wizard!"), 
-              React.createElement(AddIngredientInput, null)
+              React.createElement("div", {className: "overlay"}), 
+              React.createElement("video", {autoPlay: true, loop: true, poster: "static/img/background.jpg", id: "bgvideo"}, 
+                React.createElement("source", {src: "static/img/bartender.mp4", type: "video/mp4"})
+              ), 
 
+              React.createElement("img", {className: "top-buffer-60", src: "static/img/logo-glyph.png", width: "120"}), 
+              React.createElement("h1", {className: "landing"}, 
+                "Welcome to", React.createElement("br", null), 
+                React.createElement("strong", null, "Cocktail Wizard!")
+              ), 
+              React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
+                React.createElement(AddIngredientInput, {placeholder: "add an ingredient..."})
+              )
             )
         )
       )

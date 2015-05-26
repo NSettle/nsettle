@@ -35,7 +35,7 @@ var AddIngredientInput = React.createClass({
         return (
             <div>
                 <IngredientsShelf onAction={ this._removeIngredient } ingredients={ this.state.addedIngredients }/>
-                <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } />
+                <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } placeholder={ this.props.placeholder } />
             </div>
         );
     }

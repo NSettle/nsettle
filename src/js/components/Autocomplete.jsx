@@ -21,14 +21,13 @@ var Autocomplete = React.createClass({
       keyword:''
     }
   },
-  
+
   _handleKey: function(ev) {
 
     if (ev.which == 13) {
       ev.preventDefault();
       // Enter
       this._onAction(this.state.suggestionList[this.state.selectedIndex])
-      console.log('enter')
     }
     else if (ev.which == 38) {
       ev.preventDefault();
@@ -76,7 +75,7 @@ var Autocomplete = React.createClass({
     // set a new state for suggestionList with the filtered array
 
     var autocomplete = this.refs.autocomplete.getDOMNode();
-    
+
     var selectedList = R.map(function(i) {
       return i.id;
     }, this.props.exclude);

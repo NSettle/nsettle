@@ -1,5 +1,6 @@
 var React = require('react'),
-    AddIngredientInput = require('../components/AddIngredientInput.jsx');
+    AddIngredientInput = require('../components/AddIngredientInput.jsx'),
+    RecipeSearch  = require('../components/RecipeSearch.jsx');
 
 var HomePage = React.createClass({
   render: function() {
@@ -20,6 +21,7 @@ var HomePage = React.createClass({
               </h1>
               <div className="top-buffer-40 landing-autocomplete">
                 <AddIngredientInput placeholder="add an ingredient..." />
+                <RecipeSearch recipesList={allRecipes} />
               </div>
             </div>
         </div>

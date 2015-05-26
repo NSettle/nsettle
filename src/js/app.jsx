@@ -23,7 +23,7 @@ var App = React.createClass({
 });
 
 
-//TODO still have to fix about test route
+//TODO still have to fix about test route - Router.HistoryLocation
 var routes = (
 	<Route name="app" handler={App} path="/">
 		<DefaultRoute name="home" handler={HomePage}/>
@@ -31,7 +31,8 @@ var routes = (
 	</Route>
 );
 
-Router.run(routes, Router.HistoryLocation, function (Handler) {
+
+Router.run(routes, function (Handler) {
 	React.render(<Handler/>, document.getElementById('content'));
 });
 

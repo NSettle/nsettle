@@ -30672,7 +30672,7 @@ var HomePage = React.createClass({displayName: "HomePage",
 
               React.createElement("img", {className: "top-buffer-60", src: "static/img/logo-glyph.png", width: "120"}), 
               React.createElement("h1", {className: "landing"}, 
-                "Welcome to", React.createElement("br", null), 
+                "Welcome to the", React.createElement("br", null), 
                 React.createElement("strong", null, "Cocktail Wizard!")
               ), 
               React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 

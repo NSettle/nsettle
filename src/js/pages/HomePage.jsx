@@ -15,7 +15,7 @@ var HomePage = React.createClass({
 
               <img className="top-buffer-60" src="static/img/logo-glyph.png" width="120" />
               <h1 className="landing">
-                Welcome to<br />
+                Welcome to the<br />
                 <strong>Cocktail Wizard!</strong>
               </h1>
               <div className="top-buffer-40 landing-autocomplete">

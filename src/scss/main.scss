@@ -58,11 +58,12 @@ div.landing-autocomplete {
 		padding: 6px 20px;
 		font-size: 1.1em;
 		border-radius: 5px;
-		border: none;
+		border: 6px solid rgba(0, 100, 0, 0.25);
 		font-family: $fontFamily;
 		font-weight: 300;
 		outline: none;
 		color: #333;
+		background: rgba(255, 255, 255, 0.85);
 	}
 
 	ul.autocomplete-list {

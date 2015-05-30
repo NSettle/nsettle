@@ -30482,10 +30482,11 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 module.exports = AddIngredientInput;
 
 
-},{"../components/Autocomplete.jsx":200,"../components/IngredientsShelf.jsx":201,"../support/utils.jsx":205,"ramda":3,"react":198}],200:[function(require,module,exports){
+},{"../components/Autocomplete.jsx":200,"../components/IngredientsShelf.jsx":201,"../support/utils.jsx":206,"ramda":3,"react":198}],200:[function(require,module,exports){
 var React = require('react'),
     R = require('ramda'),
-    ClickOutside = require('react-onclickoutside');
+    ClickOutside = require('react-onclickoutside'),
+    Typed = require('../support/typed.jsx');;
 
 var Autocomplete = React.createClass({displayName: "Autocomplete",
 
@@ -30497,6 +30498,9 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     this.setState({ suggestionOpen: false });
   },
 
+  componentDidMount:function(){
+    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','milk'],element:React.findDOMNode(this.refs.autocomplete)})
+  },
 
   getInitialState: function() {
     return {
@@ -30590,8 +30594,6 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
 
   render: function() {
     // create list from suggestionList
-    console.log('Autocomplete State:',this.state)
-
     var self = this;
 
     var list = this.state.suggestionList.map(function(item, idx) {
@@ -30621,7 +30623,7 @@ var ListItem = React.createClass({displayName: "ListItem",
 module.exports = Autocomplete;
 
 
-},{"ramda":3,"react":198,"react-onclickoutside":4}],201:[function(require,module,exports){
+},{"../support/typed.jsx":205,"ramda":3,"react":198,"react-onclickoutside":4}],201:[function(require,module,exports){
 var React = require('react');
 
 var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
@@ -30780,13 +30782,75 @@ module.exports = RecipePage;
 
 
 },{"react":198}],205:[function(require,module,exports){
-//var utils = {};
+var timeOutCanceled = false;
+var myTimeOut;
+var timeAfterEachLetter = 110;
+var timeAfterEachWord = 3000;
+var timeForErasingLetters = 15;
 
-// utils.dispatch = function(event, data) {
-//     var temp_event = new CustomEvent(event, { detail: data });
-//     window.dispatchEvent(temp_event);
-// }
 
+module.exports = {
+  dispatch: function(event, data){
+    document.onclick = function(){
+      data.element.value = '';
+      clearTimeout(myTimeOut);
+      element.style.color = '#262626';
+      timeOutCanceled = true;
+    }
+
+    element = data.element;
+    element.style.color = '#999999';
+    if(data.phrases.length)
+    {
+      var index = 0;
+
+      var reverse = false;
+        (function writer(i){
+          if(timeOutCanceled)
+          {
+            element.value = '';
+            return;
+          }
+
+
+          string = data.phrases[index];
+          waitTime = timeAfterEachLetter;
+          if(!reverse)
+          {
+            if(string.length <= i++){
+              element.value = string;
+              reverse = true;
+            }
+          }else{
+            if(0 >= i--){
+              element.value = string;
+              ++index;
+              reverse = false;
+              i=0;
+              waitTime = timeAfterEachWord;
+              if(index == data.phrases.length)
+              {
+                element.value = "";
+                return;
+              }
+
+            }
+          }
+
+         element.value = string.substring(0,i);
+         if( element.value[element.value.length-1] != " " )element.focus();
+         var rand = Math.floor(Math.random() * (100)) + (!reverse?waitTime:timeForErasingLetters);
+         myTimeOut = setTimeout(function(){writer(i);},rand);
+       })(0)
+    }
+
+    //var temp_event = new CustomEvent(event, { detail: data });
+    //document.dispatchEvent(temp_event);
+  }
+}
+
+
+},{}],206:[function(require,module,exports){
 module.exports = {
   dispatch: function(event, data){
     var temp_event = new CustomEvent(event, { detail: data });

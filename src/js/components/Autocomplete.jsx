@@ -1,6 +1,7 @@
 var React = require('react'),
     R = require('ramda'),
-    ClickOutside = require('react-onclickoutside');
+    ClickOutside = require('react-onclickoutside'),
+    Typed = require('../support/typed.jsx');;
 
 var Autocomplete = React.createClass({
 
@@ -12,6 +13,9 @@ var Autocomplete = React.createClass({
     this.setState({ suggestionOpen: false });
   },
 
+  componentDidMount:function(){
+    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','milk'],element:React.findDOMNode(this.refs.autocomplete)})
+  },
 
   getInitialState: function() {
     return {
@@ -105,8 +109,6 @@ var Autocomplete = React.createClass({
 
   render: function() {
     // create list from suggestionList
-    console.log('Autocomplete State:',this.state)
-
     var self = this;
 
     var list = this.state.suggestionList.map(function(item, idx) {

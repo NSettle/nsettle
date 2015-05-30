@@ -24,7 +24,7 @@ var App = React.createClass({displayName: "App",
 });
 
 
-//TODO still have to fix about test route
+//TODO still have to fix about test route - Router.HistoryLocation
 var routes = (
 	React.createElement(Route, {name: "app", handler: App, path: "/"}, 
 		React.createElement(DefaultRoute, {name: "home", handler: HomePage}), 
@@ -32,7 +32,8 @@ var routes = (
 	)
 );
 
-Router.run(routes, Router.HistoryLocation, function (Handler) {
+
+Router.run(routes, function (Handler) {
 	React.render(React.createElement(Handler, null), document.getElementById('content'));
 });
 
@@ -42,7 +43,7 @@ Router.run(routes, Router.HistoryLocation, function (Handler) {
 //}
 
 
-},{"./pages/HomePage.jsx":202,"./pages/RecipePage.jsx":203,"react":198,"react-router":29}],2:[function(require,module,exports){
+},{"./pages/HomePage.jsx":203,"./pages/RecipePage.jsx":204,"react":198,"react-router":29}],2:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -30433,9 +30434,12 @@ module.exports = require('./lib/React');
 var React = require('react'),
     R = require('ramda'),
     Autocomplete = require('../components/Autocomplete.jsx'),
-    IngredientsShelf  = require('../components/IngredientsShelf.jsx');
+    IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
+    Utils = require('../support/utils.jsx');
 
 var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
+
+    mixins : [ Utils ],
 
     //added ingredient array
     getInitialState: function(){
@@ -30452,6 +30456,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         var newIngredients = R.clone(this.state.addedIngredients);
         newIngredients.push(item);
         this.setState({ addedIngredients: newIngredients });
+        Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
     },
 
     _removeIngredient: function(id) {
@@ -30460,6 +30465,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         });
 
         this.setState({ addedIngredients: newIngredients });
+        Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
     },
 
     render: function() {
@@ -30476,7 +30482,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 module.exports = AddIngredientInput;
 
 
-},{"../components/Autocomplete.jsx":200,"../components/IngredientsShelf.jsx":201,"ramda":3,"react":198}],200:[function(require,module,exports){
+},{"../components/Autocomplete.jsx":200,"../components/IngredientsShelf.jsx":201,"../support/utils.jsx":205,"ramda":3,"react":198}],200:[function(require,module,exports){
 var React = require('react'),
     R = require('ramda'),
     ClickOutside = require('react-onclickoutside');
@@ -30500,14 +30506,13 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
       keyword:''
     }
   },
-  
+
   _handleKey: function(ev) {
 
     if (ev.which == 13) {
       ev.preventDefault();
       // Enter
       this._onAction(this.state.suggestionList[this.state.selectedIndex])
-      console.log('enter')
     }
     else if (ev.which == 38) {
       ev.preventDefault();
@@ -30555,7 +30560,7 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     // set a new state for suggestionList with the filtered array
 
     var autocomplete = this.refs.autocomplete.getDOMNode();
-    
+
     var selectedList = R.map(function(i) {
       return i.id;
     }, this.props.exclude);
@@ -30629,6 +30634,10 @@ var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 		this.setState({ ingredients: props.ingredients });
 	},
 
+	componentDidMount:function(){
+		document.addEventListener('ingredientsChanged', function(e, data){console.log('IngredientsShelf',e.detail.ingredients)});
+	},
+
 	render: function() {
 
 		var self = this;
@@ -30647,7 +30656,7 @@ var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 
 var IngredientItem = React.createClass({displayName: "IngredientItem",
 	render: function() {
-		return React.createElement("li", null, React.createElement("div", {className: "tag"},  this.props.ingredient.name, React.createElement("a", {href: "javascript:void(0)", className: "pull-right", onClick:  this.props.onAction.bind(null, this.props.ingredient.id) }, "x")))
+		return React.createElement("li", null, React.createElement("div", {className: "tag"},  this.props.ingredient.name+' '+ this.props.ingredient.id, React.createElement("a", {href: "javascript:void(0)", className: "pull-right", onClick:  this.props.onAction.bind(null, this.props.ingredient.id) }, "x")))
 	}
 });
 
@@ -30656,7 +30665,71 @@ module.exports = IngredientsShelf;
 
 },{"react":198}],202:[function(require,module,exports){
 var React = require('react'),
-    AddIngredientInput = require('../components/AddIngredientInput.jsx');
+        R = require('ramda');
+
+var ingredientsOnShelf;
+
+var RecipeSearch = React.createClass({displayName: "RecipeSearch",
+
+  getInitialState:function(){
+    return {
+      recipesList : []
+    }
+  },
+
+  _searchRecipe:function(e, data){
+    ingredientsOnShelf = e.detail.ingredients;
+
+    this.setState({
+      recipesList:R.filter(this._isIngredientOn,this.props.recipesList).sort(this._sortByIngredientsMissing)
+    })
+  },
+
+  _sortByIngredientsMissing:function(a,b){
+    return a.ingredientsMissing - b.ingredientsMissing
+  },
+
+  _isIngredientOn:function(recipe){
+    var ingredientsMissing = recipe.ingredients.length;
+    ingredientsOnShelf.forEach(function(ingredient){
+      if(recipe.ingredients.indexOf(ingredient.id)!=-1)
+      {
+        ingredientsMissing -=1;
+      }
+    })
+    recipe.ingredientsMissing = ingredientsMissing;
+    return ingredientsMissing!=recipe.ingredients.length;
+  },
+
+  componentDidMount:function(){
+    document.addEventListener('ingredientsChanged', this._searchRecipe);
+  },
+
+  //recipesList
+
+  render: function () {
+      console.log('render',this.state)
+      return (
+          React.createElement("div", null, 
+            React.createElement("h2", null, "Recipe search"), 
+            React.createElement("ul", null, 
+            this.state.recipesList.map(function(recipe){
+              return React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
+            })
+          )
+          )
+      )
+  }
+
+});
+
+module.exports = RecipeSearch;
+
+
+},{"ramda":3,"react":198}],203:[function(require,module,exports){
+var React = require('react'),
+    AddIngredientInput = require('../components/AddIngredientInput.jsx'),
+    RecipeSearch  = require('../components/RecipeSearch.jsx');
 
 var HomePage = React.createClass({displayName: "HomePage",
   render: function() {
@@ -30676,7 +30749,8 @@ var HomePage = React.createClass({displayName: "HomePage",
                 React.createElement("strong", null, "Cocktail Wizard!")
               ), 
               React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
-                React.createElement(AddIngredientInput, {placeholder: "add an ingredient..."})
+                React.createElement(AddIngredientInput, {placeholder: "add an ingredient..."}), 
+                React.createElement(RecipeSearch, {recipesList: allRecipes})
               )
             )
         )
@@ -30688,7 +30762,7 @@ var HomePage = React.createClass({displayName: "HomePage",
 module.exports = HomePage;
 
 
-},{"../components/AddIngredientInput.jsx":199,"react":198}],203:[function(require,module,exports){
+},{"../components/AddIngredientInput.jsx":199,"../components/RecipeSearch.jsx":202,"react":198}],204:[function(require,module,exports){
 var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",
@@ -30705,4 +30779,20 @@ var RecipePage = React.createClass({displayName: "RecipePage",
 module.exports = RecipePage;
 
 
-},{"react":198}]},{},[1]);
+},{"react":198}],205:[function(require,module,exports){
+//var utils = {};
+
+// utils.dispatch = function(event, data) {
+//     var temp_event = new CustomEvent(event, { detail: data });
+//     window.dispatchEvent(temp_event);
+// }
+
+module.exports = {
+  dispatch: function(event, data){
+    var temp_event = new CustomEvent(event, { detail: data });
+    document.dispatchEvent(temp_event);
+  }
+}
+
+
+},{}]},{},[1]);

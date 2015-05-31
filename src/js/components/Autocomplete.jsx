@@ -14,7 +14,7 @@ var Autocomplete = React.createClass({
   },
 
   componentDidMount:function(){
-    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','milk'],element:React.findDOMNode(this.refs.autocomplete)})
+    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs.autocomplete)})
   },
 
   getInitialState: function() {

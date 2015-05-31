@@ -5,7 +5,6 @@ module.exports = {
   },
 
   getRecipeUrl: function(recipe){
-  	// alert(recipe.name);
-  	return recipe.id
+  	return encodeURI(recipe.name)+'-'+recipe.id
   }
 }

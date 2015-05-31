@@ -11,7 +11,6 @@ var RecipePage = React.createClass({
   		allRecipes.forEach(function(recipe){
   			if(recipe.id==recipeId)
   			{
-  				// return recipe.name
   				self.setState({
 		  			recipe:recipe
 		  		})
@@ -20,25 +19,14 @@ var RecipePage = React.createClass({
   	},
 
   	getInitialState:function(){
-  		var recipeId = this.context.router.getCurrentParams().recipeId;
-  		console.log('getInitialState: '+recipeId);
-
   		return {
   			recipe:null
   		}
   	},
 
   	componentDidMount:function(){
-
   		var recipeId = this.context.router.getCurrentParams().recipeId;
-  		this._getRecipe(recipeId)
-  		// this.setState({
-  		// 	recipe:this._getRecipe(recipeId)
-  		// })
-  	},
-
-  	componentWillReceiveProps:function(nextProps){
-  		console.log(nextProps)
+  		this._getRecipe(recipeId.split('-')[1])
   	},
 
     render: function () {
@@ -46,7 +34,13 @@ var RecipePage = React.createClass({
          return (
             <div style={{color:'red'}}>
             	<h2>Recipe page</h2>
-            	<h4>{this.state.recipe?this.state.recipe.id:null}</h4>
+            	{this.state.recipe?
+            	<ul>
+            		<li>{'name: '+this.state.recipe.name}</li>
+            		<li>{'id: '+this.state.recipe.id}</li>
+            		<li>{'ingredients: ['+this.state.recipe.ingredients+']'}</li>
+            	</ul>
+            	:null}
             </div>
         )
     }

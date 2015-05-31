@@ -30793,7 +30793,6 @@ var RecipePage = React.createClass({displayName: "RecipePage",
   		allRecipes.forEach(function(recipe){
   			if(recipe.id==recipeId)
   			{
-  				// return recipe.name
   				self.setState({
 		  			recipe:recipe
 		  		})
@@ -30802,25 +30801,14 @@ var RecipePage = React.createClass({displayName: "RecipePage",
   	},
 
   	getInitialState:function(){
-  		var recipeId = this.context.router.getCurrentParams().recipeId;
-  		console.log('getInitialState: '+recipeId);
-
   		return {
   			recipe:null
   		}
   	},
 
   	componentDidMount:function(){
-
   		var recipeId = this.context.router.getCurrentParams().recipeId;
-  		this._getRecipe(recipeId)
-  		// this.setState({
-  		// 	recipe:this._getRecipe(recipeId)
-  		// })
-  	},
-
-  	componentWillReceiveProps:function(nextProps){
-  		console.log(nextProps)
+  		this._getRecipe(recipeId.split('-')[1])
   	},
 
     render: function () {
@@ -30828,7 +30816,13 @@ var RecipePage = React.createClass({displayName: "RecipePage",
          return (
             React.createElement("div", {style: {color:'red'}}, 
             	React.createElement("h2", null, "Recipe page"), 
-            	React.createElement("h4", null, this.state.recipe?this.state.recipe.id:null)
+            	this.state.recipe?
+            	React.createElement("ul", null, 
+            		React.createElement("li", null, 'name: '+this.state.recipe.name), 
+            		React.createElement("li", null, 'id: '+this.state.recipe.id), 
+            		React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
+            	)
+            	:null
             )
         )
     }
@@ -30918,8 +30912,7 @@ module.exports = {
   },
 
   getRecipeUrl: function(recipe){
-  	// alert(recipe.name);
-  	return recipe.id
+  	return encodeURI(recipe.name)+'-'+recipe.id
   }
 }
 

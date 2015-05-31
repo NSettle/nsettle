@@ -28,7 +28,7 @@ var App = React.createClass({displayName: "App",
 var routes = (
 	React.createElement(Route, {name: "app", handler: App, path: "/"}, 
 		React.createElement(DefaultRoute, {name: "home", handler: HomePage}), 
-		React.createElement(Route, {name: "about", path: "about", handler: RecipePage})
+		React.createElement(Route, {name: "recipe", path: "recipe/:recipeId", handler: RecipePage})
 	)
 );
 
@@ -30670,11 +30670,14 @@ module.exports = IngredientsShelf;
 
 },{"react":198}],202:[function(require,module,exports){
 var React = require('react'),
-        R = require('ramda');
+        R = require('ramda'),
+        Router = require('react-router'),
+        Utils = require('../support/utils.jsx');
 
 var ingredientsOnShelf;
 
 var RecipeSearch = React.createClass({displayName: "RecipeSearch",
+  mixins : [ Utils ],
 
   getInitialState:function(){
     return {
@@ -30721,7 +30724,9 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
               React.createElement("h2", null, "Recipe search"), 
               React.createElement("ul", null, 
               this.state.recipesList.map(function(recipe){
-                return React.createElement("li", {key: 'recipesListResults-'+recipe.id}, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
+                return (React.createElement(Router.Link, {key: 'recipesListResults-'+recipe.id, to: 'recipe', params: {recipeId:Utils.getRecipeUrl(recipe)}}, 
+                    React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
+                  ))
               })
             )
             )
@@ -30738,7 +30743,7 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
 module.exports = RecipeSearch;
 
 
-},{"ramda":3,"react":198}],203:[function(require,module,exports){
+},{"../support/utils.jsx":206,"ramda":3,"react":198,"react-router":29}],203:[function(require,module,exports){
 var React = require('react'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
     RecipeSearch  = require('../components/RecipeSearch.jsx');
@@ -30779,10 +30784,52 @@ var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",
 
-    render: function () {
+	contextTypes: {
+    	router: React.PropTypes.func
+  	},
 
-        return (
-            React.createElement("div", null, React.createElement("h2", null, "Recipe page"))
+  	_getRecipe:function(recipeId){
+  		var self = this
+  		allRecipes.forEach(function(recipe){
+  			if(recipe.id==recipeId)
+  			{
+  				// return recipe.name
+  				self.setState({
+		  			recipe:recipe
+		  		})
+  			}	
+  		})
+  	},
+
+  	getInitialState:function(){
+  		var recipeId = this.context.router.getCurrentParams().recipeId;
+  		console.log('getInitialState: '+recipeId);
+
+  		return {
+  			recipe:null
+  		}
+  	},
+
+  	componentDidMount:function(){
+
+  		var recipeId = this.context.router.getCurrentParams().recipeId;
+  		this._getRecipe(recipeId)
+  		// this.setState({
+  		// 	recipe:this._getRecipe(recipeId)
+  		// })
+  	},
+
+  	componentWillReceiveProps:function(nextProps){
+  		console.log(nextProps)
+  	},
+
+    render: function () {
+    	console.log(this.state)
+         return (
+            React.createElement("div", {style: {color:'red'}}, 
+            	React.createElement("h2", null, "Recipe page"), 
+            	React.createElement("h4", null, this.state.recipe?this.state.recipe.id:null)
+            )
         )
     }
 
@@ -30868,6 +30915,11 @@ module.exports = {
   dispatch: function(event, data){
     var temp_event = new CustomEvent(event, { detail: data });
     document.dispatchEvent(temp_event);
+  },
+
+  getRecipeUrl: function(recipe){
+  	// alert(recipe.name);
+  	return recipe.id
   }
 }
 

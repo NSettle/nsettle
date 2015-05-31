@@ -27,7 +27,7 @@ var App = React.createClass({
 var routes = (
 	<Route name="app" handler={App} path="/">
 		<DefaultRoute name="home" handler={HomePage}/>
-		<Route name="about" path="about" handler={RecipePage}/>
+		<Route name="recipe" path="recipe/:recipeId" handler={RecipePage}/>
 	</Route>
 );
 

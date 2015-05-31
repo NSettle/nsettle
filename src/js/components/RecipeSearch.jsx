@@ -1,9 +1,12 @@
 var React = require('react'),
-        R = require('ramda');
+        R = require('ramda'),
+        Router = require('react-router'),
+        Utils = require('../support/utils.jsx');
 
 var ingredientsOnShelf;
 
 var RecipeSearch = React.createClass({
+  mixins : [ Utils ],
 
   getInitialState:function(){
     return {
@@ -50,7 +53,9 @@ var RecipeSearch = React.createClass({
               <h2>Recipe search</h2>
               <ul>
               {this.state.recipesList.map(function(recipe){
-                return <li key={'recipesListResults-'+recipe.id}>{recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing}</li>
+                return (<Router.Link key={'recipesListResults-'+recipe.id} to={'recipe'} params={{recipeId:Utils.getRecipeUrl(recipe)}}>
+                    <li >{recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing}</li>
+                  </Router.Link>)
               })}
             </ul>
             </div>

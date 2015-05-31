@@ -43,16 +43,23 @@ var RecipeSearch = React.createClass({
 
   render: function () {
       console.log('render',this.state)
-      return (
-          <div>
-            <h2>Recipe search</h2>
-            <ul>
-            {this.state.recipesList.map(function(recipe){
-              return <li>{recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing}</li>
-            })}
-          </ul>
-          </div>
-      )
+      if(this.state.recipesList.length>0)
+      {
+        return (
+            <div>
+              <h2>Recipe search</h2>
+              <ul>
+              {this.state.recipesList.map(function(recipe){
+                return <li key={'recipesListResults-'+recipe.id}>{recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing}</li>
+              })}
+            </ul>
+            </div>
+          )
+      }else{
+        return null
+      }  
+      
+      
   }
 
 });

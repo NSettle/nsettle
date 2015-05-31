@@ -31,7 +31,10 @@ var Autocomplete = React.createClass({
     if (ev.which == 13) {
       ev.preventDefault();
       // Enter
-      this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      if(this.state.selectedIndex!=-1)
+        this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      else
+        alert('you can only add suggested ingredients')
     }
     else if (ev.which == 38) {
       ev.preventDefault();

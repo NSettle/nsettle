@@ -94,7 +94,7 @@ process.nextTick = function (fun) {
         }
     }
     queue.push(new Item(fun, args));
-    if (!draining) {
+    if (queue.length === 1 && !draining) {
         setTimeout(drainQueue, 0);
     }
 };
@@ -30516,7 +30516,10 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     if (ev.which == 13) {
       ev.preventDefault();
       // Enter
-      this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      if(this.state.selectedIndex!=-1)
+        this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      else
+        alert('you can only add suggested ingredients')
     }
     else if (ev.which == 38) {
       ev.preventDefault();
@@ -30711,16 +30714,23 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
 
   render: function () {
       console.log('render',this.state)
-      return (
-          React.createElement("div", null, 
-            React.createElement("h2", null, "Recipe search"), 
-            React.createElement("ul", null, 
-            this.state.recipesList.map(function(recipe){
-              return React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
-            })
+      if(this.state.recipesList.length>0)
+      {
+        return (
+            React.createElement("div", null, 
+              React.createElement("h2", null, "Recipe search"), 
+              React.createElement("ul", null, 
+              this.state.recipesList.map(function(recipe){
+                return React.createElement("li", {key: 'recipesListResults-'+recipe.id}, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
+              })
+            )
+            )
           )
-          )
-      )
+      }else{
+        return null
+      }  
+      
+      
   }
 
 });

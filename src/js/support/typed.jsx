@@ -1,8 +1,9 @@
 var timeOutCanceled = false;
 var myTimeOut;
-var timeAfterEachLetter = 110;
-var timeAfterEachWord = 3000;
-var timeForErasingLetters = 15;
+var timeAfterEachLetter = 90;
+var timeAfterEachWord = 2000;
+var timeAfterWordIsFulllyTyped = 3000;
+var timeForErasingEachLetter = 15;
 
 
 module.exports = {
@@ -35,9 +36,11 @@ module.exports = {
           {
             if(string.length <= i++){
               element.value = string;
+              waitTime = timeAfterWordIsFulllyTyped;
               reverse = true;
             }
           }else{
+            waitTime = timeForErasingEachLetter;
             if(0 >= i--){
               element.value = string;
               ++index;
@@ -55,7 +58,7 @@ module.exports = {
 
          element.value = string.substring(0,i);
          if( element.value[element.value.length-1] != " " )element.focus();
-         var rand = Math.floor(Math.random() * (100)) + (!reverse?waitTime:timeForErasingLetters);
+         var rand = Math.floor(Math.random() * (100)) + (waitTime);
          myTimeOut = setTimeout(function(){writer(i);},rand);
        })(0)
     }

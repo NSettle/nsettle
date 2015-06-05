@@ -28,7 +28,7 @@ var App = React.createClass({displayName: "App",
 var routes = (
 	React.createElement(Route, {name: "app", handler: App, path: "/"}, 
 		React.createElement(DefaultRoute, {name: "home", handler: HomePage}), 
-		React.createElement(Route, {name: "about", path: "about", handler: RecipePage})
+		React.createElement(Route, {name: "recipe", path: "recipe/:recipeId", handler: RecipePage})
 	)
 );
 
@@ -30499,7 +30499,7 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
   },
 
   componentDidMount:function(){
-    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','milk'],element:React.findDOMNode(this.refs.autocomplete)})
+    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs.autocomplete)})
   },
 
   getInitialState: function() {
@@ -30516,7 +30516,10 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     if (ev.which == 13) {
       ev.preventDefault();
       // Enter
-      this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      if(this.state.selectedIndex!=-1)
+        this._onAction(this.state.suggestionList[this.state.selectedIndex])
+      else
+        alert('you can only add suggested ingredients')
     }
     else if (ev.which == 38) {
       ev.preventDefault();
@@ -30667,11 +30670,14 @@ module.exports = IngredientsShelf;
 
 },{"react":198}],202:[function(require,module,exports){
 var React = require('react'),
-        R = require('ramda');
+        R = require('ramda'),
+        Router = require('react-router'),
+        Utils = require('../support/utils.jsx');
 
 var ingredientsOnShelf;
 
 var RecipeSearch = React.createClass({displayName: "RecipeSearch",
+  mixins : [ Utils ],
 
   getInitialState:function(){
     return {
@@ -30711,16 +30717,25 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
 
   render: function () {
       console.log('render',this.state)
-      return (
-          React.createElement("div", null, 
-            React.createElement("h2", null, "Recipe search"), 
-            React.createElement("ul", null, 
-            this.state.recipesList.map(function(recipe){
-              return React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
-            })
+      if(this.state.recipesList.length>0)
+      {
+        return (
+            React.createElement("div", null, 
+              React.createElement("h2", null, "Recipe search"), 
+              React.createElement("ul", null, 
+              this.state.recipesList.map(function(recipe){
+                return (React.createElement(Router.Link, {key: 'recipesListResults-'+recipe.id, to: 'recipe', params: {recipeId:Utils.getRecipeUrl(recipe)}}, 
+                    React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
+                  ))
+              })
+            )
+            )
           )
-          )
-      )
+      }else{
+        return null
+      }  
+      
+      
   }
 
 });
@@ -30728,7 +30743,7 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
 module.exports = RecipeSearch;
 
 
-},{"ramda":3,"react":198}],203:[function(require,module,exports){
+},{"../support/utils.jsx":206,"ramda":3,"react":198,"react-router":29}],203:[function(require,module,exports){
 var React = require('react'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
     RecipeSearch  = require('../components/RecipeSearch.jsx');
@@ -30769,10 +30784,46 @@ var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",
 
-    render: function () {
+	contextTypes: {
+    	router: React.PropTypes.func
+  	},
 
-        return (
-            React.createElement("div", null, React.createElement("h2", null, "Recipe page"))
+  	_getRecipe:function(recipeId){
+  		var self = this
+  		allRecipes.forEach(function(recipe){
+  			if(recipe.id==recipeId)
+  			{
+  				self.setState({
+		  			recipe:recipe
+		  		})
+  			}	
+  		})
+  	},
+
+  	getInitialState:function(){
+  		return {
+  			recipe:null
+  		}
+  	},
+
+  	componentDidMount:function(){
+  		var recipeId = this.context.router.getCurrentParams().recipeId;
+  		this._getRecipe(recipeId.split('-')[1])
+  	},
+
+    render: function () {
+    	console.log(this.state)
+         return (
+            React.createElement("div", {style: {color:'red'}}, 
+            	React.createElement("h2", null, "Recipe page"), 
+            	this.state.recipe?
+            	React.createElement("ul", null, 
+            		React.createElement("li", null, 'name: '+this.state.recipe.name), 
+            		React.createElement("li", null, 'id: '+this.state.recipe.id), 
+            		React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
+            	)
+            	:null
+            )
         )
     }
 
@@ -30784,9 +30835,10 @@ module.exports = RecipePage;
 },{"react":198}],205:[function(require,module,exports){
 var timeOutCanceled = false;
 var myTimeOut;
-var timeAfterEachLetter = 110;
-var timeAfterEachWord = 3000;
-var timeForErasingLetters = 15;
+var timeAfterEachLetter = 90;
+var timeAfterEachWord = 2000;
+var timeAfterWordIsFulllyTyped = 3000;
+var timeForErasingEachLetter = 15;
 
 
 module.exports = {
@@ -30819,9 +30871,11 @@ module.exports = {
           {
             if(string.length <= i++){
               element.value = string;
+              waitTime = timeAfterWordIsFulllyTyped;
               reverse = true;
             }
           }else{
+            waitTime = timeForErasingEachLetter;
             if(0 >= i--){
               element.value = string;
               ++index;
@@ -30839,7 +30893,7 @@ module.exports = {
 
          element.value = string.substring(0,i);
          if( element.value[element.value.length-1] != " " )element.focus();
-         var rand = Math.floor(Math.random() * (100)) + (!reverse?waitTime:timeForErasingLetters);
+         var rand = Math.floor(Math.random() * (100)) + (waitTime);
          myTimeOut = setTimeout(function(){writer(i);},rand);
        })(0)
     }
@@ -30855,6 +30909,10 @@ module.exports = {
   dispatch: function(event, data){
     var temp_event = new CustomEvent(event, { detail: data });
     document.dispatchEvent(temp_event);
+  },
+
+  getRecipeUrl: function(recipe){
+  	return encodeURI(recipe.name)+'-'+recipe.id
   }
 }
 

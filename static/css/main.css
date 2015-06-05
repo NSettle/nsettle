@@ -5863,7 +5863,7 @@ body {
   font-family: Roboto, Helvetica, Arial, sans-serif;
   color: #FFF; }
 
-/* types.js required css*/
+/* types.js required css (not being used now, but we should keep it)*/
 .typed-cursor {
   opacity: 1;
   -webkit-animation: blink 0.7s infinite;

@@ -22,7 +22,7 @@ var IngredientsShelf = React.createClass({
 		});
 
 		return <div>
-			<ul>
+			<ul className="tags">
 				{ tags }
 			</ul>
 		</div>
@@ -32,7 +32,12 @@ var IngredientsShelf = React.createClass({
 
 var IngredientItem = React.createClass({
 	render: function() {
-		return <li><div className="tag">{ this.props.ingredient.name+' '+ this.props.ingredient.id}<a href="javascript:void(0)" className="pull-right" onClick={ this.props.onAction.bind(null, this.props.ingredient.id) }>x</a></div></li>
+		return <li>
+				<div className="tag">
+					{ this.props.ingredient.name }
+					<a href="javascript:void(0)" onClick={ this.props.onAction.bind(null, this.props.ingredient.id) }>x</a>
+				</div>
+			</li>
 	}
 });
 

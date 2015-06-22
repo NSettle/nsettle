@@ -32706,7 +32706,7 @@ var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 		});
 
 		return React.createElement("div", null, 
-			React.createElement("ul", null, 
+			React.createElement("ul", {className: "tags"}, 
 				 tags 
 			)
 		)
@@ -32716,7 +32716,12 @@ var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 
 var IngredientItem = React.createClass({displayName: "IngredientItem",
 	render: function() {
-		return React.createElement("li", null, React.createElement("div", {className: "tag"},  this.props.ingredient.name+' '+ this.props.ingredient.id, React.createElement("a", {href: "javascript:void(0)", className: "pull-right", onClick:  this.props.onAction.bind(null, this.props.ingredient.id) }, "x")))
+		return React.createElement("li", null, 
+				React.createElement("div", {className: "tag"}, 
+					 this.props.ingredient.name, 
+					React.createElement("a", {href: "javascript:void(0)", onClick:  this.props.onAction.bind(null, this.props.ingredient.id) }, "x")
+				)
+			)
 	}
 });
 
@@ -32822,7 +32827,7 @@ var HomePage = React.createClass({displayName: "HomePage",
   },
   render: function() {
     return (
-        React.createElement("div", {className: ""}, 
+        React.createElement("div", null, 
         	  /*}<div className="row">
           		<div className="col-md-12">
               
@@ -32845,13 +32850,13 @@ var HomePage = React.createClass({displayName: "HomePage",
               </div>
           </div>*/
           React.createElement("header", {className:  this.state.splitted ? "splitted" : ""}, 
-            React.createElement("div", {className: "text-center"}, 
+            React.createElement("div", {className: "header-content text-center"}, 
               
               React.createElement("h1", {className: "landing", style: { fontWeight: "bold"}, onClick:  this._splitWindow}, 
                 /* <img className="logo" src="static/img/logo-glyph.png" /> */ 
                 "Cocktail Wizard"
               ), 
-              React.createElement("div", {className: "top-buffer-20 landing-autocomplete"}, 
+              React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
                 React.createElement(AddIngredientInput, {placeholder: "add an ingredient..."})
               )
             )
@@ -32859,9 +32864,16 @@ var HomePage = React.createClass({displayName: "HomePage",
 
           React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrollTop >= 400 ? { position: "fixed", top: "0px", transition: "none" } : {}}, 
             React.createElement("div", {className: "container"}, 
-              React.createElement("ul", null, 
-                React.createElement("li", null, "Morango"), 
-                React.createElement("li", null, "Abacaxi")
+              /*<div className="nav-autocomplete">
+                <AddIngredientInput placeholder="add an ingredient..." />
+              </div>*/
+              React.createElement("div", {className: "row"}, 
+                React.createElement("div", {className: "col-md-12"}, 
+                  React.createElement("ul", null, 
+                    React.createElement("li", null, "Morango"), 
+                    React.createElement("li", null, "Abacaxi")
+                  )
+                )
               )
             )
           ), 
@@ -32878,7 +32890,7 @@ var HomePage = React.createClass({displayName: "HomePage",
           )
 
 
-        /*<RecipeSearch recipesList={ allRecipes } penian={ this.state.splitted } />*/
+        /*<RecipeSearch recipesList={ allRecipes } />*/
         ));
   }
 });

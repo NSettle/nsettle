@@ -27,7 +27,7 @@ var HomePage = React.createClass({
   },
   render: function() {
     return (
-        <div className="">
+        <div>
         	  {/*}<div className="row">
           		<div className="col-md-12">
               
@@ -50,13 +50,13 @@ var HomePage = React.createClass({
               </div>
           </div>*/}
           <header className={ this.state.splitted ? "splitted" : "" }>
-            <div className="text-center">
+            <div className="header-content text-center">
               
               <h1 className="landing" style={{ fontWeight: "bold" }} onClick={ this._splitWindow }>
                 {/* <img className="logo" src="static/img/logo-glyph.png" /> */ }
                 Cocktail Wizard
               </h1>
-              <div className="top-buffer-20 landing-autocomplete">
+              <div className="top-buffer-40 landing-autocomplete">
                 <AddIngredientInput placeholder="add an ingredient..." />
               </div>
             </div>
@@ -64,10 +64,17 @@ var HomePage = React.createClass({
 
           <div className={ this.state.splitted ? "white-nav" : "white-nav before" } style={ this.state.scrollTop >= 400 ? { position: "fixed", top: "0px", transition: "none" } : {} }>
             <div className="container">
-              <ul>
-                <li>Morango</li>
-                <li>Abacaxi</li>
-              </ul>
+              {/*<div className="nav-autocomplete">
+                <AddIngredientInput placeholder="add an ingredient..." />
+              </div>*/}
+              <div className="row">
+                <div className="col-md-12">
+                  <ul>
+                    <li>Morango</li>
+                    <li>Abacaxi</li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -83,7 +90,7 @@ var HomePage = React.createClass({
           </div>
 
 
-        {/*<RecipeSearch recipesList={ allRecipes } penian={ this.state.splitted } />*/}
+        {/*<RecipeSearch recipesList={ allRecipes } />*/}
         </div>);
   }
 });

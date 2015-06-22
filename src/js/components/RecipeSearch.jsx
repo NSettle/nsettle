@@ -1,4 +1,5 @@
-var React = require('react'),
+var React = require('react/addons'),
+    ReactCSSTransitionGroup = React.addons.CSSTransitionGroup,
         R = require('ramda'),
         Router = require('react-router'),
         Utils = require('../support/utils.jsx');
@@ -45,25 +46,18 @@ var RecipeSearch = React.createClass({
   //recipesList
 
   render: function () {
-      console.log('render',this.state)
-      if(this.state.recipesList.length>0)
-      {
-        return (
-            <div>
-              <h2>Recipe search</h2>
+
+      return <ReactCSSTransitionGroup transitionName="page-split" key="recipeSearch">
+       { /*this.state.recipesList.length > 0*/ this.props.peniana ? <div><h2>Recipe search</h2>
               <ul>
               {this.state.recipesList.map(function(recipe){
                 return (<Router.Link key={'recipesListResults-'+recipe.id} to={'recipe'} params={{recipeId:Utils.getRecipeUrl(recipe)}}>
                     <li >{recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing}</li>
                   </Router.Link>)
               })}
-            </ul>
-            </div>
-          )
-      }else{
-        return null
-      }  
-      
+            </ul></div>
+            : null }
+      </ReactCSSTransitionGroup>
       
   }
 

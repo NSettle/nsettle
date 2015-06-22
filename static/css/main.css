@@ -5861,7 +5861,8 @@ button.close {
 body {
   font-size: 20px;
   font-family: Roboto, Helvetica, Arial, sans-serif;
-  color: #FFF; }
+  color: #FFF;
+  background: #ececec; }
 
 /* types.js required css (not being used now, but we should keep it)*/
 .typed-cursor {
@@ -5873,39 +5874,42 @@ body {
 @keyframes blink {
   0% {
     opacity: 1; }
-
   50% {
     opacity: 0; }
-
   100% {
     opacity: 1; } }
 
 @-webkit-keyframes blink {
   0% {
     opacity: 1; }
-
   50% {
     opacity: 0; }
-
   100% {
     opacity: 1; } }
 
 @-moz-keyframes blink {
   0% {
     opacity: 1; }
-
   50% {
     opacity: 0; }
-
   100% {
     opacity: 1; } }
 
 /* Typography */
-h1.landing {
-  font-weight: 100;
-  font-size: 2.5em;
-  text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1); }
+/*h1.landing {
+	transition: 0.4s;
+	font-weight: 100;
+	font-size: 2.5em;
+	text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}
 
+h2 {
+
+}
+
+h3 {
+
+}*/
 /* Base margins */
 .top-buffer-10 {
   margin-top: 10px !important; }
@@ -5925,34 +5929,51 @@ h1.landing {
 .top-buffer-60 {
   margin-top: 50px !important; }
 
-/* Landing page */
-div.landing-autocomplete input {
-  width: 100%;
-  max-width: 400px;
-  padding: 6px 20px;
-  font-size: 1.1em;
-  border-radius: 5px;
-  border: 6px solid rgba(0, 100, 0, 0.25);
-  font-family: Roboto, Helvetica, Arial, sans-serif;
-  font-weight: 300;
-  outline: none;
-  color: #333;
-  background: rgba(255, 255, 255, 0.85); }
+.bottom-buffer-10 {
+  margin-bottom: 10px !important; }
 
-div.landing-autocomplete ul.autocomplete-list {
-  background: rgba(255, 255, 255, 0.6);
-  max-width: 400px;
-  margin: auto;
-  padding: 0;
-  width: 100%;
-  border-radius: 0px 0px 3px 3px;
-  list-style: none; }
-  div.landing-autocomplete ul.autocomplete-list li {
-    padding: 3px;
-    color: #666;
-    font-weight: 300;
-    text-align: left;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+.bottom-buffer-20 {
+  margin-bottom: 20px !important; }
+
+.bottom-buffer-30 {
+  margin-bottom: 30px !important; }
+
+.bottom-buffer-40 {
+  margin-bottom: 40px !important; }
+
+/* Landing page */
+/*img.logo {
+	width: 120px;
+	transition: 0.5s ease-in-out;
+}*/
+div.landing-autocomplete {
+  /*input {
+		width: 100%;
+		max-width: 400px;
+		padding: 6px 20px;
+		font-size: 1.1em;
+		border-radius: 5px;
+		border: 6px solid rgba(0, 100, 0, 0.25);
+		font-family: $fontFamily;
+		font-weight: 300;
+		outline: none;
+		color: #333;
+		background: rgba(255, 255, 255, 0.85);
+	}*/ }
+  div.landing-autocomplete ul.autocomplete-list {
+    background: rgba(255, 255, 255, 0.6);
+    max-width: 400px;
+    margin: auto;
+    padding: 0;
+    width: 100%;
+    border-radius: 0px 0px 3px 3px;
+    list-style: none; }
+    div.landing-autocomplete ul.autocomplete-list li {
+      padding: 3px;
+      color: #666;
+      font-weight: 300;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 
 div.overlay {
   position: fixed;
@@ -5966,7 +5987,8 @@ div.overlay {
   opacity: 0.6;
   -webkit-transform: translateX(-50%) translateY(-50%);
   transform: translateX(-50%) translateY(-50%);
-  z-index: -50; }
+  z-index: -50;
+  transition: 0.5s ease-in-out; }
 
 video#bgvideo {
   position: fixed;
@@ -5981,7 +6003,189 @@ video#bgvideo {
   transform: translateX(-50%) translateY(-50%);
   background: url(../img/background.jpg) no-repeat;
   /* fallback */
-  background-size: cover; }
+  background-size: cover;
+  transition: 0.5s ease-in-out; }
 
 .selected {
   background: red; }
+
+/* Split animation */
+.full-width {
+  position: relative;
+  width: 100%; }
+
+.to-split {
+  transition: 0.5s ease-in-out; }
+
+.splitted-left {
+  position: relative;
+  width: 50%;
+  float: left; }
+  .splitted-left h1.landing {
+    font-size: 2em;
+    text-shadow: none; }
+  .splitted-left img.logo {
+    width: 90px; }
+  .splitted-left .overlay {
+    left: 0%;
+    opacity: 1; }
+  .splitted-left #bgvideo {
+    left: 0%;
+    opacity: 0; }
+
+.page-split-enter {
+  width: 100%;
+  background: #FF0000;
+  opacity: 0.01;
+  transition: opacity 2s ease-out; }
+
+.page-split-enter.page-split-enter-active {
+  opacity: 1; }
+
+.page-split-leave {
+  opacity: 1;
+  transition: opacity 2s ease-in; }
+
+.page-split-leave.page-split-leave-active {
+  opacity: 0.01; }
+
+/* Novo layout -------------------------------- */
+.container {
+  width: 70%;
+  transition: 0.4s; }
+
+@media only screen and (max-width: 601px) {
+  .container {
+    width: 85%; } }
+
+@media only screen and (max-width: 401px) {
+  .container {
+    width: 95%; } }
+
+header {
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: #00bfa5;
+  transition: 0.5s ease-in-out; }
+  header h1.landing {
+    font-size: 50px; }
+  header .logo {
+    width: 80px;
+    vertical-align: bottom;
+    margin-right: 5px;
+    display: inline; }
+  header .landing-autocomplete ::-webkit-input-placeholder {
+    color: #FFF; }
+  header .landing-autocomplete :-moz-placeholder {
+    color: #FFF; }
+  header .landing-autocomplete ::-moz-placeholder {
+    color: #FFF; }
+  header .landing-autocomplete :-ms-input-placeholder {
+    color: #FFF; }
+  header .landing-autocomplete input {
+    width: 100%;
+    max-width: 400px;
+    padding: 6px 20px;
+    font-size: 1.1em;
+    border: none;
+    border-bottom: 2px solid #FFF;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    font-weight: 300;
+    outline: none;
+    color: #FFF !important;
+    background: none; }
+
+header.splitted {
+  position: absolute;
+  height: 400px; }
+
+.white-nav.before {
+  top: 100% !important;
+  z-index: -1; }
+
+.white-nav {
+  position: absolute;
+  top: 400px;
+  left: 0px;
+  width: 100%;
+  z-index: 1;
+  background: #FFFFFF;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  padding: 20px;
+  transition: 0.5s ease-in-out; }
+  .white-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    .white-nav ul li {
+      display: inline;
+      padding: 0;
+      margin: 0;
+      color: #5f5f5f;
+      font-size: 15px; }
+
+.recipe-list.before {
+  padding-top: 800px; }
+
+.recipe-list {
+  padding-top: 470px;
+  transition: 0.6s ease-in-out; }
+
+.card {
+  width: 100%;
+  color: #333;
+  background: #FFFFFF;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+  margin-top: 36px; }
+  .card h4.card-title {
+    width: 100%;
+    color: #222;
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 0.8em; }
+    .card h4.card-title span.missing {
+      font-size: 0.6em;
+      line-height: 1.6em;
+      float: right; }
+  .card .card-image {
+    position: relative;
+    line-height: 10px; }
+    .card .card-image img.responsive-image {
+      width: 100%;
+      border-radius: 2px 2px 0px 0px; }
+    .card .card-image h4.card-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      padding: 20px;
+      color: #FFF;
+      width: 100%;
+      line-height: normal;
+      font-weight: 300;
+      background-color: rgba(0, 0, 0, 0.6);
+      margin: 0; }
+    .card .card-image span.missing {
+      font-size: 0.7em;
+      line-height: 1.6em;
+      float: right; }
+  .card .card-content {
+    padding: 22px;
+    font-size: 15px;
+    color: #5f5f5f; }
+  .card .card-action {
+    border-top: 1px solid rgba(160, 160, 160, 0.2);
+    border-radius: 0px 0px 2px 2px;
+    padding: 20px; }
+    .card .card-action a {
+      color: #00acc1;
+      font-size: 15px;
+      text-decoration: none; }
+    .card .card-action i {
+      margin: 5px 10px;
+      float: right;
+      transition: 0.2s ease-out; }
+    .card .card-action i.liked {
+      transform: scale(1.2); }

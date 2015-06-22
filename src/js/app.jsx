@@ -26,8 +26,8 @@ var App = React.createClass({
 //TODO still have to fix about test route - Router.HistoryLocation
 var routes = (
 	<Route name="app" handler={App} path="/">
-		<DefaultRoute name="home" handler={HomePage}/>
-		<Route name="recipe" path="recipe/:recipeId" handler={RecipePage}/>
+		<DefaultRoute name="home" handler={ HomePage }/>
+		<Route name="recipe" path="recipe/:recipeId" handler={ RecipePage }/>
 	</Route>
 );
 

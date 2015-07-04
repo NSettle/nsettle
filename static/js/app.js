@@ -32489,7 +32489,6 @@ module.exports = require('./lib/React');
 var React = require('react'),
     R = require('ramda'),
     Autocomplete = require('../components/Autocomplete.jsx'),
-    IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
     Utils = require('../support/utils.jsx');
 
 var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
@@ -32512,6 +32511,10 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         newIngredients.push(item);
         this.setState({ addedIngredients: newIngredients });
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
+        if(!this.props.splitted)
+        {
+            this.props.splitView();
+        }    
     },
 
     _removeIngredient: function(id) {
@@ -32523,11 +32526,21 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
     },
 
+    _updateIngredients:function  (e, data) {
+
+        this.setState({
+          addedIngredients: e.detail.ingredients
+        })
+    },
+
+    componentDidMount:function(){
+        document.addEventListener('ingredientsChanged', this._updateIngredients);
+      },
+
     render: function() {
 
         return (
             React.createElement("div", null, 
-                React.createElement(IngredientsShelf, {onAction:  this._removeIngredient, ingredients:  this.state.addedIngredients}), 
                 React.createElement(Autocomplete, {onAction:  this._addIngredient, exclude:  this.state.addedIngredients, suggestionList:  allIngredients, placeholder:  this.props.placeholder})
             )
         );
@@ -32537,7 +32550,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 module.exports = AddIngredientInput;
 
 
-},{"../components/Autocomplete.jsx":218,"../components/IngredientsShelf.jsx":219,"../support/utils.jsx":224,"ramda":3,"react":216}],218:[function(require,module,exports){
+},{"../components/Autocomplete.jsx":218,"../support/utils.jsx":224,"ramda":3,"react":216}],218:[function(require,module,exports){
 var React = require('react'),
     R = require('ramda'),
     ClickOutside = require('react-onclickoutside'),
@@ -32682,44 +32695,73 @@ module.exports = Autocomplete;
 
 
 },{"../support/typed.jsx":223,"ramda":3,"react":216,"react-onclickoutside":4}],219:[function(require,module,exports){
-var React = require('react');
+var React = require('react'),
+	R = require('ramda'),
+	Utils = require('../support/utils.jsx');
 
 var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 	getInitialState: function() {
 		return {
-			ingredients: []
+			ingredients: new Array()
 		};
-	},
-	componentWillReceiveProps: function(props) {
-		this.setState({ ingredients: props.ingredients });
 	},
 
 	componentDidMount:function(){
-		document.addEventListener('ingredientsChanged', function(e, data){console.log('IngredientsShelf',e.detail.ingredients)});
+		document.addEventListener('ingredientsChanged', this._updateIngredients);
 	},
+
+	_removeIngredient:function  (id) {
+		var newIngredients = R.clone(this.state.ingredients).filter(function(i) {
+            return i.id != id;
+        });
+
+        this.setState({ ingredients: newIngredients });
+        Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
+	},
+
+	_updateIngredients:function  (e, data) {
+		console.log('_updateIngredients IngredientsShelf', e.detail.ingredients, data)
+		if(e.detail.ingredients)
+		{
+			this.setState({
+	          ingredients: e.detail.ingredients
+	        })
+		}	
+        
+    },
 
 	render: function() {
 
 		var self = this;
-		var tags = this.state.ingredients.map(function(ingredient,idx) {
-			return React.createElement(IngredientItem, {key: 'IngredientItem-'+idx, ingredient:  ingredient, onAction:  self.props.onAction})
-		});
 
-		return React.createElement("div", null, 
-			React.createElement("ul", {className: "tags"}, 
-				 tags 
+		console.log('IngredientsShelf state',this.state)
+
+		if(this.state.ingredients && this.state.ingredients.length>0)
+		{
+			var tags = this.state.ingredients.map(function(ingredient,idx) {
+				return React.createElement(IngredientItem, {key: 'IngredientItem-'+idx, ingredient:  ingredient, removeIngredient: self._removeIngredient})
+			});
+
+			return React.createElement("div", null, 
+				React.createElement("ul", {className: "tags"}, 
+					 tags 
+				)
 			)
-		)
+		}else{
+			return null
+		}	
 	}
 
 });
+
+//onClick={ this.props.onAction.bind(null, this.props.ingredient.id) }
 
 var IngredientItem = React.createClass({displayName: "IngredientItem",
 	render: function() {
 		return React.createElement("li", null, 
 				React.createElement("div", {className: "tag"}, 
 					 this.props.ingredient.name, 
-					React.createElement("a", {href: "javascript:void(0)", onClick:  this.props.onAction.bind(null, this.props.ingredient.id) }, "x")
+					React.createElement("a", {href: "javascript:void(0)", onClick:  this.props.removeIngredient.bind(null, this.props.ingredient.id) }, "x")
 				)
 			)
 	}
@@ -32728,7 +32770,7 @@ var IngredientItem = React.createClass({displayName: "IngredientItem",
 module.exports = IngredientsShelf;
 
 
-},{"react":216}],220:[function(require,module,exports){
+},{"../support/utils.jsx":224,"ramda":3,"react":216}],220:[function(require,module,exports){
 var React = require('react/addons'),
     ReactCSSTransitionGroup = React.addons.CSSTransitionGroup,
         R = require('ramda'),
@@ -32759,6 +32801,7 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
   },
 
   _isIngredientOn:function(recipe){
+    //return only recipes that have at least one ingredient on the ingredient shelf
     var ingredientsMissing = recipe.ingredients.length;
     ingredientsOnShelf.forEach(function(ingredient){
       if(recipe.ingredients.indexOf(ingredient.id)!=-1)
@@ -32777,21 +32820,84 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
   //recipesList
 
   render: function () {
+    console.log('recipesList',this.state.recipesList)
 
-      return React.createElement(ReactCSSTransitionGroup, {transitionName: "page-split", key: "recipeSearch"}, 
-        /*this.state.recipesList.length > 0*/ this.props.peniana ? React.createElement("div", null, React.createElement("h2", null, "Recipe search"), 
-              React.createElement("ul", null, 
-              this.state.recipesList.map(function(recipe){
-                return (React.createElement(Router.Link, {key: 'recipesListResults-'+recipe.id, to: 'recipe', params: {recipeId:Utils.getRecipeUrl(recipe)}}, 
-                    React.createElement("li", null, recipe.name+' ['+recipe.ingredients+'] ingredientsMissing:'+recipe.ingredientsMissing)
-                  ))
-              })
-            ))
-            : null
-      )
-      
+      return React.createElement("div", {className:  this.props.splitted ? "recipe-list" : "recipe-list before"}, 
+            React.createElement("div", {className: "container", style:  this.props.splitted ? {} : { display: "none" }}, 
+               this.props.splitted && this.state.recipesList.length > 0?
+              React.createElement("div", null, 
+                this.state.recipesList.map(function(recipe){
+                  return (React.createElement(RecipeCard, {hasImage:  true, recipe: recipe}))
+                })
+              )
+              : null
+            )
+          )
   }
 
+});
+
+/* Opcional, mas fica legal do domingo legal! */
+var SaveAction = React.createClass({displayName: "SaveAction",
+  getInitialState: function() {
+    return { saved: false }
+  },
+  _save: function() {
+    this.setState({ saved: !this.state.saved });
+  },
+  render: function() {
+    return (React.createElement("i", {className:  this.state.saved ? "fa fa-heart liked" : "fa fa-heart-o", onClick:  this._save, style: { color: "#EB393B", cursor: "pointer"}}))
+  }
+});
+
+var RecipeCard = React.createClass({displayName: "RecipeCard",
+  render: function() {
+
+    var recipe = this.props.recipe;
+
+    if (this.props.hasImage) {
+      return (React.createElement("div", {className: "row"}, 
+              React.createElement("div", {className: "col-md-12"}, 
+                React.createElement("div", {className: "card"}, 
+                  React.createElement("div", {className: "card-image"}, 
+                    React.createElement("img", {className: "responsive-image", src: "static/img/cocktail.jpg", alt: "Nome do drink"}), 
+                    React.createElement("h4", {className: "card-title"}, 
+                      recipe.name, 
+                      React.createElement("span", {className: "missing"}, recipe.ingredientsMissing+" missing")
+                    )
+
+                  ), 
+                  React.createElement("div", {className: "card-content"}, 
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'
+                  ), 
+                  React.createElement("div", {className: "card-action"}, 
+                    React.createElement(Router.Link, {key: 'recipesListResults-'+recipe.id, to: 'recipe', params: {recipeId:Utils.getRecipeUrl(recipe)}}, "READ MORE"), 
+                    React.createElement(SaveAction, null)
+                  )
+                )
+              )
+            ));
+    }
+    else {
+      return (React.createElement("div", {className: "row"}, 
+              React.createElement("div", {className: "col-md-12"}, 
+                React.createElement("div", {className: "card"}, 
+                  React.createElement("div", {className: "card-content"}, 
+                    React.createElement("h4", {className: "card-title"}, 
+                      "Strawberry and Pineapple Juice", 
+                      React.createElement("span", {className: "missing"}, "1 missing")
+                    ), 
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'
+                  ), 
+                  React.createElement("div", {className: "card-action"}, 
+                    React.createElement("a", {href: "javascript:void(0)"}, "READ MORE"), 
+                    React.createElement(SaveAction, null)
+                  )
+                )
+              )
+            ));
+    }
+  }
 });
 
 module.exports = RecipeSearch;
@@ -32801,6 +32907,7 @@ module.exports = RecipeSearch;
 var React = require('react'),
     utils = require('../support/utils.jsx'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
+    IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
     RecipeSearch  = require('../components/RecipeSearch.jsx');
 
 var HomePage = React.createClass({displayName: "HomePage",
@@ -32852,113 +32959,38 @@ var HomePage = React.createClass({displayName: "HomePage",
           React.createElement("header", {className:  this.state.splitted ? "splitted" : ""}, 
             React.createElement("div", {className: "header-content text-center"}, 
               
-              React.createElement("h1", {className: "landing", style: { fontWeight: "bold"}, onClick:  this._splitWindow}, 
+              React.createElement("h1", {className: "landing", style: { fontWeight: "bold"}}, 
                 /* <img className="logo" src="static/img/logo-glyph.png" /> */ 
                 "Cocktail Wizard"
               ), 
               React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
-                React.createElement(AddIngredientInput, {placeholder: "add an ingredient..."})
+                React.createElement(AddIngredientInput, {placeholder: "add an ingredient...", splitView: this._splitWindow, splitted: this.state.splitted})
               )
             )
           ), 
 
           React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrollTop >= 400 ? { position: "fixed", top: "0px", transition: "none" } : {}}, 
             React.createElement("div", {className: "container"}, 
-              /*<div className="nav-autocomplete">
-                <AddIngredientInput placeholder="add an ingredient..." />
-              </div>*/
               React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
-                  React.createElement("ul", null, 
-                    React.createElement("li", null, "Morango"), 
-                    React.createElement("li", null, "Abacaxi")
-                  )
+                  React.createElement(IngredientsShelf, null), 
+                  "// ", React.createElement("ul", null, 
+                  "//   ", React.createElement("li", null, "Morango"), 
+                  "//   ", React.createElement("li", null, "Abacaxi"), 
+                  "// ")
                 )
               )
             )
           ), 
-
-          React.createElement("div", {className:  this.state.splitted ? "recipe-list" : "recipe-list before"}, 
-            React.createElement("div", {className: "container", style:  this.state.splitted ? {} : { display: "none" }}, 
-               this.state.splitted ?
-              React.createElement("div", null, React.createElement(RecipeCard, {hasImage:  true }), 
-              React.createElement(RecipeCard, {hasImage:  false }), 
-              React.createElement(RecipeCard, {hasImage:  false }), 
-              React.createElement(RecipeCard, {hasImage:  false }))
-              : null
-            )
-          )
-
-
-        /*<RecipeSearch recipesList={ allRecipes } />*/
+        React.createElement(RecipeSearch, {recipesList:  allRecipes, splitted: this.state.splitted})
         ));
-  }
-});
-
-/* Opcional, mas fica legal do domingo legal! */
-var SaveAction = React.createClass({displayName: "SaveAction",
-  getInitialState: function() {
-    return { saved: false }
-  },
-  _save: function() {
-    this.setState({ saved: !this.state.saved });
-  },
-  render: function() {
-    return (React.createElement("i", {className:  this.state.saved ? "fa fa-heart liked" : "fa fa-heart-o", onClick:  this._save, style: { color: "#EB393B", cursor: "pointer"}}))
-  }
-});
-
-var RecipeCard = React.createClass({displayName: "RecipeCard",
-  render: function() {
-    if (this.props.hasImage) {
-      return (React.createElement("div", {className: "row"}, 
-              React.createElement("div", {className: "col-md-12"}, 
-                React.createElement("div", {className: "card"}, 
-                  React.createElement("div", {className: "card-image"}, 
-                    React.createElement("img", {className: "responsive-image", src: "static/img/cocktail.jpg", alt: "Nome do drink"}), 
-                    React.createElement("h4", {className: "card-title"}, 
-                      "Strawberry and Pineapple Juice", 
-                      React.createElement("span", {className: "missing"}, "1 missing")
-                    )
-
-                  ), 
-                  React.createElement("div", {className: "card-content"}, 
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'
-                  ), 
-                  React.createElement("div", {className: "card-action"}, 
-                    React.createElement("a", {href: "javascript:void(0)"}, "READ MORE"), 
-                    React.createElement(SaveAction, null)
-                  )
-                )
-              )
-            ));
-    }
-    else {
-      return (React.createElement("div", {className: "row"}, 
-              React.createElement("div", {className: "col-md-12"}, 
-                React.createElement("div", {className: "card"}, 
-                  React.createElement("div", {className: "card-content"}, 
-                    React.createElement("h4", {className: "card-title"}, 
-                      "Strawberry and Pineapple Juice", 
-                      React.createElement("span", {className: "missing"}, "1 missing")
-                    ), 
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'
-                  ), 
-                  React.createElement("div", {className: "card-action"}, 
-                    React.createElement("a", {href: "javascript:void(0)"}, "READ MORE"), 
-                    React.createElement(SaveAction, null)
-                  )
-                )
-              )
-            ));
-    }
   }
 });
 
 module.exports = HomePage;
 
 
-},{"../components/AddIngredientInput.jsx":217,"../components/RecipeSearch.jsx":220,"../support/utils.jsx":224,"react":216}],222:[function(require,module,exports){
+},{"../components/AddIngredientInput.jsx":217,"../components/IngredientsShelf.jsx":219,"../components/RecipeSearch.jsx":220,"../support/utils.jsx":224,"react":216}],222:[function(require,module,exports){
 var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",

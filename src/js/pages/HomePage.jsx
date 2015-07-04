@@ -1,6 +1,7 @@
 var React = require('react'),
     utils = require('../support/utils.jsx'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
+    IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
     RecipeSearch  = require('../components/RecipeSearch.jsx');
 
 var HomePage = React.createClass({
@@ -52,106 +53,31 @@ var HomePage = React.createClass({
           <header className={ this.state.splitted ? "splitted" : "" }>
             <div className="header-content text-center">
               
-              <h1 className="landing" style={{ fontWeight: "bold" }} onClick={ this._splitWindow }>
+              <h1 className="landing" style={{ fontWeight: "bold" }}>
                 {/* <img className="logo" src="static/img/logo-glyph.png" /> */ }
                 Cocktail Wizard
               </h1>
               <div className="top-buffer-40 landing-autocomplete">
-                <AddIngredientInput placeholder="add an ingredient..." />
+                <AddIngredientInput placeholder="add an ingredient..." splitView={this._splitWindow} splitted={this.state.splitted} />
               </div>
             </div>
           </header>
 
           <div className={ this.state.splitted ? "white-nav" : "white-nav before" } style={ this.state.scrollTop >= 400 ? { position: "fixed", top: "0px", transition: "none" } : {} }>
             <div className="container">
-              {/*<div className="nav-autocomplete">
-                <AddIngredientInput placeholder="add an ingredient..." />
-              </div>*/}
               <div className="row">
                 <div className="col-md-12">
-                  <ul>
-                    <li>Morango</li>
-                    <li>Abacaxi</li>
-                  </ul>
+                  <IngredientsShelf/>
+                  // <ul>
+                  //   <li>Morango</li>
+                  //   <li>Abacaxi</li>
+                  // </ul>
                 </div>
               </div>
             </div>
           </div>
-
-          <div className={ this.state.splitted ? "recipe-list" : "recipe-list before" }>
-            <div className="container" style={ this.state.splitted ? {} : { display: "none" }}>
-              { this.state.splitted ?
-              <div><RecipeCard hasImage={ true } />
-              <RecipeCard hasImage={ false } />
-              <RecipeCard hasImage={ false } />
-              <RecipeCard hasImage={ false } /></div>
-              : null }
-            </div>
-          </div>
-
-
-        {/*<RecipeSearch recipesList={ allRecipes } />*/}
+        <RecipeSearch recipesList={ allRecipes } splitted={this.state.splitted}/>
         </div>);
-  }
-});
-
-/* Opcional, mas fica legal do domingo legal! */
-var SaveAction = React.createClass({
-  getInitialState: function() {
-    return { saved: false }
-  },
-  _save: function() {
-    this.setState({ saved: !this.state.saved });
-  },
-  render: function() {
-    return (<i className={ this.state.saved ? "fa fa-heart liked" : "fa fa-heart-o" } onClick={ this._save } style={{ color: "#EB393B", cursor: "pointer" }} />)
-  }
-});
-
-var RecipeCard = React.createClass({
-  render: function() {
-    if (this.props.hasImage) {
-      return (<div className="row">
-              <div className="col-md-12">
-                <div className="card">
-                  <div className="card-image">
-                    <img className="responsive-image" src="static/img/cocktail.jpg" alt="Nome do drink" />
-                    <h4 className="card-title">
-                      Strawberry and Pineapple Juice
-                      <span className="missing">1 missing</span>
-                    </h4>
-
-                  </div>
-                  <div className="card-content">
-                    {'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'}
-                  </div>
-                  <div className="card-action">
-                    <a href="javascript:void(0)">READ MORE</a>
-                    <SaveAction />
-                  </div>
-                </div>
-              </div>
-            </div>);
-    }
-    else {
-      return (<div className="row">
-              <div className="col-md-12">
-                <div className="card">
-                  <div className="card-content">
-                    <h4 className="card-title">
-                      Strawberry and Pineapple Juice
-                      <span className="missing">1 missing</span>
-                    </h4>
-                    {'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'}
-                  </div>
-                  <div className="card-action">
-                    <a href="javascript:void(0)">READ MORE</a>
-                    <SaveAction />
-                  </div>
-                </div>
-              </div>
-            </div>);
-    }
   }
 });
 

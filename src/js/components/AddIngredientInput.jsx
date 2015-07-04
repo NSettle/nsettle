@@ -1,7 +1,6 @@
 var React = require('react'),
     R = require('ramda'),
     Autocomplete = require('../components/Autocomplete.jsx'),
-    IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
     Utils = require('../support/utils.jsx');
 
 var AddIngredientInput = React.createClass({
@@ -24,6 +23,10 @@ var AddIngredientInput = React.createClass({
         newIngredients.push(item);
         this.setState({ addedIngredients: newIngredients });
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
+        if(!this.props.splitted)
+        {
+            this.props.splitView();
+        }    
     },
 
     _removeIngredient: function(id) {
@@ -35,11 +38,21 @@ var AddIngredientInput = React.createClass({
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
     },
 
+    _updateIngredients:function  (e, data) {
+
+        this.setState({
+          addedIngredients: e.detail.ingredients
+        })
+    },
+
+    componentDidMount:function(){
+        document.addEventListener('ingredientsChanged', this._updateIngredients);
+      },
+
     render: function() {
 
         return (
             <div>
-                <IngredientsShelf onAction={ this._removeIngredient } ingredients={ this.state.addedIngredients }/>
                 <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } placeholder={ this.props.placeholder } />
             </div>
         );

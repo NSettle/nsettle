@@ -13,13 +13,16 @@ var HomePage = React.createClass({
     console.log('homepPage.jsx componentWillMount')
     document.addEventListener("splitWindow", this._splitWindow);
     document.addEventListener("scroll", this._setScroll);
-    window.addEventListener("onhashchange", function(){alert('hashchange')});
+    window.addEventListener("hashchange", this._hashChange);
     this._hashChange();
   },
   _hashChange: function(){
     console.log('############# hashchange #############',window.location.hash)
-    if(global && global.location.hash)
-      this.setState({ recipeHash: window.location.hash })
+    if(window && window.location.hash)
+    {
+      console.log('changing hashhh')
+      this.setState({ recipeHash: window.location.hash.split('#/')[1] })
+    } 
   },
   componentWillUnmount: function() {
     document.removeEventListener("splitWindow", this._splitWindow);

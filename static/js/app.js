@@ -32902,7 +32902,6 @@ module.exports = RecipeSearch;
 
 
 },{"../support/utils.jsx":224,"ramda":3,"react/addons":44}],221:[function(require,module,exports){
-(function (global){
 var React = require('react'),
     utils = require('../support/utils.jsx'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
@@ -32918,13 +32917,16 @@ var HomePage = React.createClass({displayName: "HomePage",
     console.log('homepPage.jsx componentWillMount')
     document.addEventListener("splitWindow", this._splitWindow);
     document.addEventListener("scroll", this._setScroll);
-    window.addEventListener("onhashchange", function(){alert('hashchange')});
+    window.addEventListener("hashchange", this._hashChange);
     this._hashChange();
   },
   _hashChange: function(){
     console.log('############# hashchange #############',window.location.hash)
-    if(global && global.location.hash)
-      this.setState({ recipeHash: window.location.hash })
+    if(window && window.location.hash)
+    {
+      console.log('changing hashhh')
+      this.setState({ recipeHash: window.location.hash.split('#/')[1] })
+    } 
   },
   componentWillUnmount: function() {
     document.removeEventListener("splitWindow", this._splitWindow);
@@ -33000,7 +33002,6 @@ var HomePage = React.createClass({displayName: "HomePage",
 module.exports = HomePage;
 
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"../components/AddIngredientInput.jsx":217,"../components/IngredientsShelf.jsx":219,"../components/RecipeSearch.jsx":220,"../support/utils.jsx":224,"./RecipePage.jsx":222,"react":216}],222:[function(require,module,exports){
 (function (global){
 var React = require('react')
@@ -33030,13 +33031,14 @@ var RecipePage = React.createClass({displayName: "RecipePage",
   	},
 
     componentWillReceiveProps: function (nextProps) {
+      console.log('componentWillReceiveProps')
       if(nextProps.recipeHash)
-        this._getRecipe(nextProps.recipeHash.split('#/')[1].split('-')[1])
+        this._getRecipe(nextProps.recipeHash.split('-')[1])
     },
 
   	componentDidMount:function(){
       if(this.props.recipeHash)
-  		  this._getRecipe(this.props.recipeHash.split('#/')[1].split('-')[1])
+  		  this._getRecipe(this.props.recipeHash.split('-')[1])
   	},
 
     _backToHome:function () {
@@ -33059,7 +33061,6 @@ var RecipePage = React.createClass({displayName: "RecipePage",
             React.createElement("div", {className: "recipePage", style: {color:'red'}}, 
               React.createElement("h2", null, "Recipe page"), 
               React.createElement("button", {onClick: this._backToHome}, "back"), 
-              React.createElement("a", {href: "#/3333"}, "test change hash"), 
               this.state.recipe?
               React.createElement("ul", null, 
                 React.createElement("li", null, 'name: '+this.state.recipe.name), 

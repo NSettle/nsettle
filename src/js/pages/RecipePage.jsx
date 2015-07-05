@@ -25,13 +25,14 @@ var RecipePage = React.createClass({
   	},
 
     componentWillReceiveProps: function (nextProps) {
+      console.log('componentWillReceiveProps')
       if(nextProps.recipeHash)
-        this._getRecipe(nextProps.recipeHash.split('#/')[1].split('-')[1])
+        this._getRecipe(nextProps.recipeHash.split('-')[1])
     },
 
   	componentDidMount:function(){
       if(this.props.recipeHash)
-  		  this._getRecipe(this.props.recipeHash.split('#/')[1].split('-')[1])
+  		  this._getRecipe(this.props.recipeHash.split('-')[1])
   	},
 
     _backToHome:function () {
@@ -54,7 +55,6 @@ var RecipePage = React.createClass({
             <div className="recipePage" style={{color:'red'}}>
               <h2>Recipe page</h2>
               <button onClick={this._backToHome}>back</button> 
-              <a href="#/3333">test change hash</a>
               {this.state.recipe?
               <ul>
                 <li>{'name: '+this.state.recipe.name}</li>

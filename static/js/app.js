@@ -32530,6 +32530,11 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         this.setState({
           addedIngredients: e.detail.ingredients
         })
+        if(e.detail.ingredients.length<=0)
+        {
+            this.props.splitView();    
+        }    
+
     },
 
     componentDidMount:function(){

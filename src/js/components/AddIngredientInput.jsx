@@ -43,6 +43,11 @@ var AddIngredientInput = React.createClass({
         this.setState({
           addedIngredients: e.detail.ingredients
         })
+        if(e.detail.ingredients.length<=0)
+        {
+            this.props.splitView();    
+        }    
+
     },
 
     componentDidMount:function(){

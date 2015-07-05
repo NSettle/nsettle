@@ -1,7 +1,6 @@
 var React = require('react/addons'),
     ReactCSSTransitionGroup = React.addons.CSSTransitionGroup,
         R = require('ramda'),
-        Router = require('react-router'),
         Utils = require('../support/utils.jsx');
 
 var ingredientsOnShelf;
@@ -98,7 +97,7 @@ var RecipeCard = React.createClass({
                     {'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'}
                   </div>
                   <div className="card-action">
-                    <Router.Link key={'recipesListResults-'+recipe.id} to={'recipe'} params={{recipeId:Utils.getRecipeUrl(recipe)}}>READ MORE</Router.Link>
+                    <a key={'recipesListResults-'+recipe.id} href={"/#/"+Utils.getRecipeUrl(recipe)} params={{recipeId:Utils.getRecipeUrl(recipe)}}>READ MORE</a>
                     <SaveAction />
                   </div>
                 </div>

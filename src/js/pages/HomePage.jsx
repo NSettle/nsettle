@@ -2,15 +2,24 @@ var React = require('react'),
     utils = require('../support/utils.jsx'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
     IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
-    RecipeSearch  = require('../components/RecipeSearch.jsx');
+    RecipeSearch  = require('../components/RecipeSearch.jsx'),
+    RecipePage = require('./RecipePage.jsx');
 
 var HomePage = React.createClass({
   getInitialState: function() {
     return { splitted: false, scrollTop: 0 };
   },
   componentWillMount: function() {
+    console.log('homepPage.jsx componentWillMount')
     document.addEventListener("splitWindow", this._splitWindow);
     document.addEventListener("scroll", this._setScroll);
+    window.addEventListener("onhashchange", function(){alert('hashchange')});
+    this._hashChange();
+  },
+  _hashChange: function(){
+    console.log('############# hashchange #############',window.location.hash)
+    if(global && global.location.hash)
+      this.setState({ recipeHash: window.location.hash })
   },
   componentWillUnmount: function() {
     document.removeEventListener("splitWindow", this._splitWindow);
@@ -27,8 +36,10 @@ var HomePage = React.createClass({
     utils.dispatch("splitWindow");
   },
   render: function() {
+    //<RecipePage />
     return (
         <div>
+          <RecipePage recipeHash={this.state.recipeHash}/>
         	  {/*}<div className="row">
           		<div className="col-md-12">
               

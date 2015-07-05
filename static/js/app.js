@@ -17,7 +17,7 @@ var App = React.createClass({displayName: "App",
 	render: function () {
 		return (
 			React.createElement("div", null, 
-				React.createElement(RouteHandler, null)
+				React.createElement(HomePage, null)
 			)
 		);
 	}
@@ -25,22 +25,21 @@ var App = React.createClass({displayName: "App",
 
 
 //TODO still have to fix about test route - Router.HistoryLocation
-var routes = (
-	React.createElement(Route, {name: "app", handler: App, path: "/"}, 
-		React.createElement(DefaultRoute, {name: "home", handler:  HomePage }), 
-		React.createElement(Route, {name: "recipe", path: "recipe/:recipeId", handler:  RecipePage })
-	)
-);
+// var routes = (
+// 	<Route name="app" handler={App} path="/">
+// 		<DefaultRoute name="home" handler={ HomePage }/>
+// 	</Route>
+// );
 
 
-Router.run(routes, function (Handler) {
-	React.render(React.createElement(Handler, null), document.getElementById('content'));
-});
+// Router.run(routes, function (Handler) {
+// 	React.render(<Handler/>, document.getElementById('content'));
+// });
 
 
-//window.onload = function() {
-//	React.render(<App />, document.getElementById('content'));
-//}
+window.onload = function() {
+	React.render(React.createElement(App, null), document.getElementById('content'));
+}
 
 
 },{"./pages/HomePage.jsx":221,"./pages/RecipePage.jsx":222,"react":216,"react-router":29}],2:[function(require,module,exports){
@@ -32774,7 +32773,6 @@ module.exports = IngredientsShelf;
 var React = require('react/addons'),
     ReactCSSTransitionGroup = React.addons.CSSTransitionGroup,
         R = require('ramda'),
-        Router = require('react-router'),
         Utils = require('../support/utils.jsx');
 
 var ingredientsOnShelf;
@@ -32871,7 +32869,7 @@ var RecipeCard = React.createClass({displayName: "RecipeCard",
                     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incindunt ut labore et dolore magna aliqua. Ut enim and minim veniam.'
                   ), 
                   React.createElement("div", {className: "card-action"}, 
-                    React.createElement(Router.Link, {key: 'recipesListResults-'+recipe.id, to: 'recipe', params: {recipeId:Utils.getRecipeUrl(recipe)}}, "READ MORE"), 
+                    React.createElement("a", {key: 'recipesListResults-'+recipe.id, href: "/#/"+Utils.getRecipeUrl(recipe), params: {recipeId:Utils.getRecipeUrl(recipe)}}, "READ MORE"), 
                     React.createElement(SaveAction, null)
                   )
                 )
@@ -32903,20 +32901,30 @@ var RecipeCard = React.createClass({displayName: "RecipeCard",
 module.exports = RecipeSearch;
 
 
-},{"../support/utils.jsx":224,"ramda":3,"react-router":29,"react/addons":44}],221:[function(require,module,exports){
+},{"../support/utils.jsx":224,"ramda":3,"react/addons":44}],221:[function(require,module,exports){
+(function (global){
 var React = require('react'),
     utils = require('../support/utils.jsx'),
     AddIngredientInput = require('../components/AddIngredientInput.jsx'),
     IngredientsShelf  = require('../components/IngredientsShelf.jsx'),
-    RecipeSearch  = require('../components/RecipeSearch.jsx');
+    RecipeSearch  = require('../components/RecipeSearch.jsx'),
+    RecipePage = require('./RecipePage.jsx');
 
 var HomePage = React.createClass({displayName: "HomePage",
   getInitialState: function() {
     return { splitted: false, scrollTop: 0 };
   },
   componentWillMount: function() {
+    console.log('homepPage.jsx componentWillMount')
     document.addEventListener("splitWindow", this._splitWindow);
     document.addEventListener("scroll", this._setScroll);
+    window.addEventListener("onhashchange", function(){alert('hashchange')});
+    this._hashChange();
+  },
+  _hashChange: function(){
+    console.log('############# hashchange #############',window.location.hash)
+    if(global && global.location.hash)
+      this.setState({ recipeHash: window.location.hash })
   },
   componentWillUnmount: function() {
     document.removeEventListener("splitWindow", this._splitWindow);
@@ -32933,8 +32941,10 @@ var HomePage = React.createClass({displayName: "HomePage",
     utils.dispatch("splitWindow");
   },
   render: function() {
+    //<RecipePage />
     return (
         React.createElement("div", null, 
+          React.createElement(RecipePage, {recipeHash: this.state.recipeHash}), 
         	  /*}<div className="row">
           		<div className="col-md-12">
               
@@ -32990,7 +33000,9 @@ var HomePage = React.createClass({displayName: "HomePage",
 module.exports = HomePage;
 
 
-},{"../components/AddIngredientInput.jsx":217,"../components/IngredientsShelf.jsx":219,"../components/RecipeSearch.jsx":220,"../support/utils.jsx":224,"react":216}],222:[function(require,module,exports){
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"../components/AddIngredientInput.jsx":217,"../components/IngredientsShelf.jsx":219,"../components/RecipeSearch.jsx":220,"../support/utils.jsx":224,"./RecipePage.jsx":222,"react":216}],222:[function(require,module,exports){
+(function (global){
 var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",
@@ -33017,25 +33029,50 @@ var RecipePage = React.createClass({displayName: "RecipePage",
   		}
   	},
 
+    componentWillReceiveProps: function (nextProps) {
+      if(nextProps.recipeHash)
+        this._getRecipe(nextProps.recipeHash.split('#/')[1].split('-')[1])
+    },
+
   	componentDidMount:function(){
-  		var recipeId = this.context.router.getCurrentParams().recipeId;
-  		this._getRecipe(recipeId.split('-')[1])
+      if(this.props.recipeHash)
+  		  this._getRecipe(this.props.recipeHash.split('#/')[1].split('-')[1])
   	},
 
+    _backToHome:function () {
+      if(global)
+      {
+        var loc = global.location.href,
+        index = loc.indexOf('#');
+
+        if (index > 0) {
+          global.location = loc.substring(0, index)+"#/";
+        }
+      }  
+    },
+
     render: function () {
-    	console.log(this.state)
-         return (
-            React.createElement("div", {style: {color:'red'}}, 
-            	React.createElement("h2", null, "Recipe page"), 
-            	this.state.recipe?
-            	React.createElement("ul", null, 
-            		React.createElement("li", null, 'name: '+this.state.recipe.name), 
-            		React.createElement("li", null, 'id: '+this.state.recipe.id), 
-            		React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
-            	)
-            	:null
+    	console.log('recipePage',this.state)
+      if(this.props.recipeHash)
+      {
+        return (
+            React.createElement("div", {className: "recipePage", style: {color:'red'}}, 
+              React.createElement("h2", null, "Recipe page"), 
+              React.createElement("button", {onClick: this._backToHome}, "back"), 
+              React.createElement("a", {href: "#/3333"}, "test change hash"), 
+              this.state.recipe?
+              React.createElement("ul", null, 
+                React.createElement("li", null, 'name: '+this.state.recipe.name), 
+                React.createElement("li", null, 'id: '+this.state.recipe.id), 
+                React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
+              )
+              :null
             )
         )
+      }else{
+        return null;
+      }  
+         
     }
 
 });
@@ -33043,6 +33080,7 @@ var RecipePage = React.createClass({displayName: "RecipePage",
 module.exports = RecipePage;
 
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"react":216}],223:[function(require,module,exports){
 var timeOutCanceled = false;
 var myTimeOut;

@@ -32914,9 +32914,11 @@ var React = require('react'),
     RecipeSearch  = require('../components/RecipeSearch.jsx'),
     RecipePage = require('./RecipePage.jsx');
 
+var scrollTop = (window.pageYOffset || document.scrollTop) - (document.clientTop || 0);
+
 var HomePage = React.createClass({displayName: "HomePage",
   getInitialState: function() {
-    return { splitted: false, scrollTop: 0 };
+    return { splitted: false, scrolledOver: false };
   },
   componentWillMount: function() {
     console.log('homepPage.jsx componentWillMount')
@@ -32938,8 +32940,15 @@ var HomePage = React.createClass({displayName: "HomePage",
     document.removeEventListener("scroll", this._setScroll);
   },
   _setScroll: function(ev) {
-    var top = (window.pageYOffset || document.scrollTop) - (document.clientTop || 0);
-    this.setState({ scrollTop: top });
+    scrollTop = (window.pageYOffset || document.scrollTop) - (document.clientTop || 0);
+    
+    if (!this.state.scrolledOver && scrollTop >= 400) {
+      this.setState({ scrolledOver: true });
+    }
+    else if (this.state.scrolledOver && scrollTop < 400) {
+      this.setState({ scrolledOver: false })
+    }
+    // this.setState({ scrollTop: top });
   },
   _splitWindow: function() {
     this.setState({ splitted: !this.state.splitted });
@@ -32986,15 +32995,11 @@ var HomePage = React.createClass({displayName: "HomePage",
             )
           ), 
 
-          React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrollTop >= 400 ? { position: "fixed", top: "0px", transition: "none" } : {}}, 
+          React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : {}}, 
             React.createElement("div", {className: "container"}, 
               React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
-                  React.createElement(IngredientsShelf, null), 
-                  "// ", React.createElement("ul", null, 
-                  "//   ", React.createElement("li", null, "Morango"), 
-                  "//   ", React.createElement("li", null, "Abacaxi"), 
-                  "// ")
+                  React.createElement(IngredientsShelf, null)
                 )
               )
             )

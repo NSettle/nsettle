@@ -32857,9 +32857,35 @@ var SaveAction = React.createClass({displayName: "SaveAction",
 });
 
 var RecipeCard = React.createClass({displayName: "RecipeCard",
+  getInitialState: function () {
+      return {
+          recipe:this.props.recipe  
+      };
+  },
+
+  componentDidMount: function () {
+      console.log('componentDidMount !--------------')
+      var self = this
+      //run thorugh ingredient list and gather the images for all the ingredients for
+      //this recipe. The only purpose on this is to make the recipe mosaic
+      var newRecipeObj = this.state.recipe;
+      newRecipeObj.ingredientsImgs = new Array();
+
+      allIngredients.forEach(function(ingredient){
+        if(self.state.recipe.ingredients.indexOf(ingredient.id)>-1)
+        {
+          newRecipeObj.ingredientsImgs.push(ingredient.image) 
+        }  
+      })
+
+      this.setState({
+        recipe:newRecipeObj
+      })
+  },
+
   render: function() {
 
-    var recipe = this.props.recipe;
+    var recipe = this.state.recipe;
 
     if (this.props.hasImage) {
       return (React.createElement("div", {className: "row"}, 

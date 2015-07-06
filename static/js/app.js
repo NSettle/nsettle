@@ -32570,9 +32570,10 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
     this.setState({ suggestionOpen: false });
   },
 
-  componentDidMount:function(){
-    if(this.props.typed)
-    {
+  componentDidMount:function() {
+    document.addEventListener("closeSuggestion", this._closeSuggestion);
+
+    if(this.props.typed) {
       Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')])})  
     }
   },
@@ -32584,6 +32585,10 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
       selectedIndex: -1,
       keyword:''
     }
+  },
+
+  _closeSuggestion: function() {
+    this.setState({ suggestionOpen: false });
   },
 
   _handleKey: function(ev) {
@@ -32680,7 +32685,8 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
 
     return (
     	React.createElement("div", {id: "autocomplete"}, 
-      		React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete"+(this.props.typed?'Typed':''), onChange: this._searchSuggestions, onKeyDown:  this._handleKey, placeholder:  this.props.placeholder}), 
+      		/*this.props.typed ? null : <i className="fa fa-search" />*/ 
+          React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete"+(this.props.typed?'Typed':''), onChange: this._searchSuggestions, onKeyDown:  this._handleKey, placeholder:  this.props.placeholder}), 
              this.state.suggestionOpen ? React.createElement("ul", {className: "autocomplete-list"},  list ) : null
         )
     );
@@ -32691,8 +32697,8 @@ var ListItem = React.createClass({displayName: "ListItem",
   render:function(){
     return (
         React.createElement("li", {onClick:  this.props.onAction.bind(null, this.props.item), className: this.props.selected? 'selected':null}, 
-        React.createElement("img", {src:  this.props.item.image, width: "30"}), 
-         this.props.item.name
+          React.createElement("img", {src:  this.props.item.image, width: "30"}), 
+           this.props.item.name
         )
     );
   }
@@ -32734,7 +32740,6 @@ var IngredientsShelf = React.createClass({displayName: "IngredientsShelf",
 	          ingredients: e.detail.ingredients
 	        })
 		}	
-        
     },
 
 	render: function() {
@@ -32826,8 +32831,6 @@ var RecipeSearch = React.createClass({displayName: "RecipeSearch",
   //recipesList
 
   render: function () {
-    console.log('recipesList',this.state.recipesList)
-
       return React.createElement("div", {className:  this.props.splitted ? "recipe-list" : "recipe-list before"}, 
             React.createElement("div", {className: "container", style:  this.props.splitted ? {} : { display: "none" }}, 
                this.props.splitted && this.state.recipesList.length > 0?
@@ -32864,7 +32867,6 @@ var RecipeCard = React.createClass({displayName: "RecipeCard",
   },
 
   componentDidMount: function () {
-      console.log('componentDidMount !--------------')
       var self = this
       //run thorugh ingredient list and gather the images for all the ingredients for
       //this recipe. The only purpose on this is to make the recipe mosaic
@@ -32950,46 +32952,47 @@ var HomePage = React.createClass({displayName: "HomePage",
     return { splitted: false, scrolledOver: null };
   },
   componentWillMount: function() {
-    console.log('homepPage.jsx componentWillMount')
     document.addEventListener("splitWindow", this._splitWindow);
     document.addEventListener("scroll", this._setScroll);
     window.addEventListener("hashchange", this._hashChange);
     this._hashChange();
   },
-  _hashChange: function(){
-    console.log('############# hashchange #############',window.location.hash)
-    if(window && window.location.hash)
-    {
-      console.log('changing hashhh')
-      this.setState({ recipeHash: window.location.hash.split('#/')[1] })
-    } 
-  },
   componentWillUnmount: function() {
     document.removeEventListener("splitWindow", this._splitWindow);
     document.removeEventListener("scroll", this._setScroll);
+    window.removeEventListener("hashchange", this._hashChange);
+  },
+  _hashChange: function() {
+    if(window && window.location.hash) {
+      this.setState({ recipeHash: window.location.hash.split('#/')[1] })
+    } 
   },
   _setScroll: function(ev) {
     scrollTop = (window.pageYOffset || document.scrollTop) - (document.clientTop || 0);
     
     if (!this.state.scrolledOver && scrollTop >= 400) {
       this.setState({ scrolledOver: true });
+      utils.dispatch("closeSuggestion");
     }
     else if (this.state.scrolledOver && scrollTop < 400) {
-      this.setState({ scrolledOver: false })
+      this.setState({ scrolledOver: false });
+      utils.dispatch("closeSuggestion");
     }
-    // this.setState({ scrollTop: top });
   },
   _splitWindow: function() {
-    this.setState({ splitted: !this.state.splitted });
-  },
-  _dispatch: function() {
-    utils.dispatch("splitWindow");
+    console.log("Splitting window");
+    if (this.state.splitted) {
+      var self = this;
+      this.setState({ scrolledOver: null });
+      setTimeout(function() { self.setState({ splitted: false }) }, 10);
+    }
+    else {
+      this.setState({ splitted: !this.state.splitted });
+    }
   },
   render: function() {
-    //<RecipePage />
     return (
         React.createElement("div", null, 
-          React.createElement(RecipePage, {recipeHash: this.state.recipeHash}), 
         	  /*}<div className="row">
           		<div className="col-md-12">
               
@@ -32997,7 +33000,6 @@ var HomePage = React.createClass({displayName: "HomePage",
                 <video autoPlay loop poster="static/img/background.jpg" id="bgvideo">
                   <source src="static/img/bartender.mp4" type="video/mp4"></source>
                 </video>
-                
 
                 <img className="logo top-buffer-60" src="static/img/logo-glyph.png" />
                 <h1 className="landing">
@@ -33007,15 +33009,14 @@ var HomePage = React.createClass({displayName: "HomePage",
                 <div className="top-buffer-40 landing-autocomplete">
                   <AddIngredientInput placeholder="add an ingredient..." />
                 </div>
-
-                
               </div>
           </div>*/
+
+          React.createElement(RecipePage, {recipeHash:  this.state.recipeHash}), 
+
           React.createElement("header", {className:  this.state.splitted ? "splitted" : ""}, 
             React.createElement("div", {className: "header-content text-center"}, 
-              
               React.createElement("h1", {className: "landing", style: { fontWeight: "bold"}}, 
-                /* <img className="logo" src="static/img/logo-glyph.png" /> */ 
                 "Cocktail Wizard"
               ), 
               React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
@@ -33027,14 +33028,18 @@ var HomePage = React.createClass({displayName: "HomePage",
           React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : this.state.scrolledOver === null ? {} : { transition: "none" }}, 
             React.createElement("div", {className: "container"}, 
               React.createElement("div", {className: "row"}, 
-                React.createElement("div", {className: "col-md-12"}, 
-                  React.createElement(IngredientsShelf, null), 
+                React.createElement("div", {className:  this.state.scrolledOver ? "input-scrolled input-nav" : "input-nav"}, 
                   React.createElement(AddIngredientInput, {typed: false, placeholder: "add an ingredient...", splitted: this.state.splitted})
+                ), 
+                React.createElement("div", {className:  this.state.scrolledOver ? "shelf-scrolled shelf-nav" : "shelf-nav"}, 
+                  React.createElement(IngredientsShelf, null)
                 )
               )
             )
           ), 
-        React.createElement(RecipeSearch, {recipesList:  allRecipes, splitted: this.state.splitted})
+          
+          React.createElement(RecipeSearch, {recipesList:  allRecipes, splitted:  this.state.splitted})
+
         ));
   }
 });
@@ -33048,7 +33053,7 @@ var React = require('react')
 
 var RecipePage = React.createClass({displayName: "RecipePage",
 
-	contextTypes: {
+    contextTypes: {
     	router: React.PropTypes.func
   	},
 
@@ -33071,7 +33076,6 @@ var RecipePage = React.createClass({displayName: "RecipePage",
   	},
 
     componentWillReceiveProps: function (nextProps) {
-      console.log('componentWillReceiveProps')
       if(nextProps.recipeHash)
         this._getRecipe(nextProps.recipeHash.split('-')[1])
     },
@@ -33094,25 +33098,28 @@ var RecipePage = React.createClass({displayName: "RecipePage",
     },
 
     render: function () {
-    	console.log('recipePage',this.state)
-      if(this.props.recipeHash)
-      {
-        return (
-            React.createElement("div", {className: "recipePage", style: {color:'red'}}, 
-              React.createElement("h2", null, "Recipe page"), 
-              React.createElement("button", {onClick: this._backToHome}, "back"), 
-              this.state.recipe?
-              React.createElement("ul", null, 
-                React.createElement("li", null, 'name: '+this.state.recipe.name), 
-                React.createElement("li", null, 'id: '+this.state.recipe.id), 
-                React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
-              )
-              :null
-            )
-        )
-      }else{
-        return null;
-      }  
+      var recipe = null;
+      if(this.props.recipeHash) {
+        recipe = React.createElement("div", {className: "content card"}, 
+                React.createElement("div", {className: "card-content"}, 
+                  React.createElement("h2", null, "Recipe page"), 
+                  React.createElement("button", {onClick: this._backToHome}, "back"), 
+                  this.state.recipe?
+                  React.createElement("ul", null, 
+                    React.createElement("li", null, 'name: '+this.state.recipe.name), 
+                    React.createElement("li", null, 'id: '+this.state.recipe.id), 
+                    React.createElement("li", null, 'ingredients: ['+this.state.recipe.ingredients+']')
+                  )
+                  :null
+                )
+              );
+      }
+
+      return (
+          React.createElement("div", {className:  this.props.recipeHash ? "recipePage opened" : "recipePage"}, 
+             recipe 
+          ));
+        
          
     }
 

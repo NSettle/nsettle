@@ -2,7 +2,7 @@ var React = require('react')
 
 var RecipePage = React.createClass({
 
-	contextTypes: {
+    contextTypes: {
     	router: React.PropTypes.func
   	},
 
@@ -25,7 +25,6 @@ var RecipePage = React.createClass({
   	},
 
     componentWillReceiveProps: function (nextProps) {
-      console.log('componentWillReceiveProps')
       if(nextProps.recipeHash)
         this._getRecipe(nextProps.recipeHash.split('-')[1])
     },
@@ -48,25 +47,28 @@ var RecipePage = React.createClass({
     },
 
     render: function () {
-    	console.log('recipePage',this.state)
-      if(this.props.recipeHash)
-      {
-        return (
-            <div className="recipePage" style={{color:'red'}}>
-              <h2>Recipe page</h2>
-              <button onClick={this._backToHome}>back</button> 
-              {this.state.recipe?
-              <ul>
-                <li>{'name: '+this.state.recipe.name}</li>
-                <li>{'id: '+this.state.recipe.id}</li>
-                <li>{'ingredients: ['+this.state.recipe.ingredients+']'}</li>
-              </ul>
-              :null}
-            </div>
-        )
-      }else{
-        return null;
-      }  
+      var recipe = null;
+      if(this.props.recipeHash) {
+        recipe = <div className="content card">
+                <div className="card-content">
+                  <h2>Recipe page</h2>
+                  <button onClick={this._backToHome}>back</button> 
+                  {this.state.recipe?
+                  <ul>
+                    <li>{'name: '+this.state.recipe.name}</li>
+                    <li>{'id: '+this.state.recipe.id}</li>
+                    <li>{'ingredients: ['+this.state.recipe.ingredients+']'}</li>
+                  </ul>
+                  :null}
+                </div>
+              </div>;
+      }
+
+      return (
+          <div className={ this.props.recipeHash ? "recipePage opened" : "recipePage"}>
+            { recipe }
+          </div>);
+        
          
     }
 

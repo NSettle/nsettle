@@ -30,7 +30,6 @@ var IngredientsShelf = React.createClass({
 	          ingredients: e.detail.ingredients
 	        })
 		}	
-        
     },
 
 	render: function() {

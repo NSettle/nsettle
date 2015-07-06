@@ -13,9 +13,10 @@ var Autocomplete = React.createClass({
     this.setState({ suggestionOpen: false });
   },
 
-  componentDidMount:function(){
-    if(this.props.typed)
-    {
+  componentDidMount:function() {
+    document.addEventListener("closeSuggestion", this._closeSuggestion);
+
+    if(this.props.typed) {
       Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')])})  
     }
   },
@@ -27,6 +28,10 @@ var Autocomplete = React.createClass({
       selectedIndex: -1,
       keyword:''
     }
+  },
+
+  _closeSuggestion: function() {
+    this.setState({ suggestionOpen: false });
   },
 
   _handleKey: function(ev) {
@@ -123,7 +128,8 @@ var Autocomplete = React.createClass({
 
     return (
     	<div id="autocomplete">
-      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref={"autocomplete"+(this.props.typed?'Typed':'')} onChange={this._searchSuggestions} onKeyDown={ this._handleKey } placeholder={ this.props.placeholder } />
+      		{ /*this.props.typed ? null : <i className="fa fa-search" />*/ }
+          <input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref={"autocomplete"+(this.props.typed?'Typed':'')} onChange={this._searchSuggestions} onKeyDown={ this._handleKey } placeholder={ this.props.placeholder } />
             { this.state.suggestionOpen ? <ul className="autocomplete-list">{ list }</ul> : null }
         </div>
     );
@@ -134,8 +140,8 @@ var ListItem = React.createClass({
   render:function(){
     return (
         <li onClick={ this.props.onAction.bind(null, this.props.item) } className={this.props.selected? 'selected':null}>
-        <img src={ this.props.item.image } width="30" />
-        { this.props.item.name }
+          <img src={ this.props.item.image } width="30" />
+          { this.props.item.name }
         </li>
     );
   }

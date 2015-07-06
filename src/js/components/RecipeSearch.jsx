@@ -46,8 +46,6 @@ var RecipeSearch = React.createClass({
   //recipesList
 
   render: function () {
-    console.log('recipesList',this.state.recipesList)
-
       return <div className={ this.props.splitted ? "recipe-list" : "recipe-list before" }>
             <div className="container" style={ this.props.splitted ? {} : { display: "none" }}>
               { this.props.splitted && this.state.recipesList.length > 0?
@@ -77,9 +75,34 @@ var SaveAction = React.createClass({
 });
 
 var RecipeCard = React.createClass({
+  getInitialState: function () {
+      return {
+          recipe:this.props.recipe  
+      };
+  },
+
+  componentDidMount: function () {
+      var self = this
+      //run thorugh ingredient list and gather the images for all the ingredients for
+      //this recipe. The only purpose on this is to make the recipe mosaic
+      var newRecipeObj = this.state.recipe;
+      newRecipeObj.ingredientsImgs = new Array();
+
+      allIngredients.forEach(function(ingredient){
+        if(self.state.recipe.ingredients.indexOf(ingredient.id)>-1)
+        {
+          newRecipeObj.ingredientsImgs.push(ingredient.image) 
+        }  
+      })
+
+      this.setState({
+        recipe:newRecipeObj
+      })
+  },
+
   render: function() {
 
-    var recipe = this.props.recipe;
+    var recipe = this.state.recipe;
 
     if (this.props.hasImage) {
       return (<div className="row">

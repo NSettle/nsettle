@@ -23,7 +23,7 @@ var AddIngredientInput = React.createClass({
         newIngredients.push(item);
         this.setState({ addedIngredients: newIngredients });
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
-        if(!this.props.splitted)
+        if(this.props.splitView && !this.props.splitted)
         {
             this.props.splitView();
         }    
@@ -43,7 +43,7 @@ var AddIngredientInput = React.createClass({
         this.setState({
           addedIngredients: e.detail.ingredients
         })
-        if(e.detail.ingredients.length<=0)
+        if(this.props.splitView && e.detail.ingredients.length<=0)
         {
             this.props.splitView();    
         }    
@@ -58,7 +58,7 @@ var AddIngredientInput = React.createClass({
 
         return (
             <div>
-                <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } placeholder={ this.props.placeholder } />
+                <Autocomplete onAction={ this._addIngredient } exclude={ this.state.addedIngredients } suggestionList={ allIngredients } placeholder={ this.props.placeholder } typed={this.props.typed}/>
             </div>
         );
     }

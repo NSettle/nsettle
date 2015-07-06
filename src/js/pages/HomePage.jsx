@@ -81,7 +81,7 @@ var HomePage = React.createClass({
                 Cocktail Wizard
               </h1>
               <div className="top-buffer-40 landing-autocomplete">
-                <AddIngredientInput placeholder="add an ingredient..." splitView={this._splitWindow} splitted={this.state.splitted} />
+                <AddIngredientInput typed={true} placeholder="add an ingredient..." splitView={this._splitWindow} splitted={this.state.splitted} />
               </div>
             </div>
           </header>
@@ -91,6 +91,7 @@ var HomePage = React.createClass({
               <div className="row">
                 <div className="col-md-12">
                   <IngredientsShelf />
+                  <AddIngredientInput typed={false} placeholder="add an ingredient..." splitted={this.state.splitted} />
                 </div>
               </div>
             </div>

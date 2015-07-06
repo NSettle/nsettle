@@ -14,7 +14,10 @@ var Autocomplete = React.createClass({
   },
 
   componentDidMount:function(){
-    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs.autocomplete)})
+    if(this.props.typed)
+    {
+      Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')])})  
+    }
   },
 
   getInitialState: function() {
@@ -81,7 +84,7 @@ var Autocomplete = React.createClass({
   _searchSuggestions: function() {
     // set a new state for suggestionList with the filtered array
 
-    var autocomplete = this.refs.autocomplete.getDOMNode();
+    var autocomplete = React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')]);
 
     var selectedList = R.map(function(i) {
       return i.id;
@@ -100,7 +103,7 @@ var Autocomplete = React.createClass({
   //receive props as an array with all the suggestion
   _onAction: function(item) {
     this.props.onAction(item);
-    this.refs.autocomplete.getDOMNode().focus();
+    React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')]).focus();
 
     //var newIngredients = R.clone(this.state.suggestionList).filter(function(i) {
     //  return i.id != item.id;
@@ -120,7 +123,7 @@ var Autocomplete = React.createClass({
 
     return (
     	<div id="autocomplete">
-      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref="autocomplete" onChange={this._searchSuggestions} onKeyDown={ this._handleKey } placeholder={ this.props.placeholder } />
+      		<input value={this.state.keyword} type="text"  onFocus={ this._searchSuggestions} ref={"autocomplete"+(this.props.typed?'Typed':'')} onChange={this._searchSuggestions} onKeyDown={ this._handleKey } placeholder={ this.props.placeholder } />
             { this.state.suggestionOpen ? <ul className="autocomplete-list">{ list }</ul> : null }
         </div>
     );

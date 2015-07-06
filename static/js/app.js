@@ -32510,7 +32510,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         newIngredients.push(item);
         this.setState({ addedIngredients: newIngredients });
         Utils.dispatch("ingredientsChanged", {"ingredients": newIngredients});
-        if(!this.props.splitted)
+        if(this.props.splitView && !this.props.splitted)
         {
             this.props.splitView();
         }    
@@ -32530,7 +32530,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
         this.setState({
           addedIngredients: e.detail.ingredients
         })
-        if(e.detail.ingredients.length<=0)
+        if(this.props.splitView && e.detail.ingredients.length<=0)
         {
             this.props.splitView();    
         }    
@@ -32545,7 +32545,7 @@ var AddIngredientInput = React.createClass({displayName: "AddIngredientInput",
 
         return (
             React.createElement("div", null, 
-                React.createElement(Autocomplete, {onAction:  this._addIngredient, exclude:  this.state.addedIngredients, suggestionList:  allIngredients, placeholder:  this.props.placeholder})
+                React.createElement(Autocomplete, {onAction:  this._addIngredient, exclude:  this.state.addedIngredients, suggestionList:  allIngredients, placeholder:  this.props.placeholder, typed: this.props.typed})
             )
         );
     }
@@ -32571,7 +32571,10 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
   },
 
   componentDidMount:function(){
-    Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs.autocomplete)})
+    if(this.props.typed)
+    {
+      Typed.dispatch('startTyping',{phrases:['irish whiskey','vodka','lemons','condensed milk'],element:React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')])})  
+    }
   },
 
   getInitialState: function() {
@@ -32638,7 +32641,7 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
   _searchSuggestions: function() {
     // set a new state for suggestionList with the filtered array
 
-    var autocomplete = this.refs.autocomplete.getDOMNode();
+    var autocomplete = React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')]);
 
     var selectedList = R.map(function(i) {
       return i.id;
@@ -32657,7 +32660,7 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
   //receive props as an array with all the suggestion
   _onAction: function(item) {
     this.props.onAction(item);
-    this.refs.autocomplete.getDOMNode().focus();
+    React.findDOMNode(this.refs["autocomplete"+(this.props.typed?'Typed':'')]).focus();
 
     //var newIngredients = R.clone(this.state.suggestionList).filter(function(i) {
     //  return i.id != item.id;
@@ -32677,7 +32680,7 @@ var Autocomplete = React.createClass({displayName: "Autocomplete",
 
     return (
     	React.createElement("div", {id: "autocomplete"}, 
-      		React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete", onChange: this._searchSuggestions, onKeyDown:  this._handleKey, placeholder:  this.props.placeholder}), 
+      		React.createElement("input", {value: this.state.keyword, type: "text", onFocus:  this._searchSuggestions, ref: "autocomplete"+(this.props.typed?'Typed':''), onChange: this._searchSuggestions, onKeyDown:  this._handleKey, placeholder:  this.props.placeholder}), 
              this.state.suggestionOpen ? React.createElement("ul", {className: "autocomplete-list"},  list ) : null
         )
     );
@@ -32990,7 +32993,7 @@ var HomePage = React.createClass({displayName: "HomePage",
                 "Cocktail Wizard"
               ), 
               React.createElement("div", {className: "top-buffer-40 landing-autocomplete"}, 
-                React.createElement(AddIngredientInput, {placeholder: "add an ingredient...", splitView: this._splitWindow, splitted: this.state.splitted})
+                React.createElement(AddIngredientInput, {typed: true, placeholder: "add an ingredient...", splitView: this._splitWindow, splitted: this.state.splitted})
               )
             )
           ), 
@@ -32999,7 +33002,8 @@ var HomePage = React.createClass({displayName: "HomePage",
             React.createElement("div", {className: "container"}, 
               React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 
-                  React.createElement(IngredientsShelf, null)
+                  React.createElement(IngredientsShelf, null), 
+                  React.createElement(AddIngredientInput, {typed: false, placeholder: "add an ingredient...", splitted: this.state.splitted})
                 )
               )
             )

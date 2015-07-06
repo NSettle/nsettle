@@ -32918,7 +32918,7 @@ var scrollTop = (window.pageYOffset || document.scrollTop) - (document.clientTop
 
 var HomePage = React.createClass({displayName: "HomePage",
   getInitialState: function() {
-    return { splitted: false, scrolledOver: false };
+    return { splitted: false, scrolledOver: null };
   },
   componentWillMount: function() {
     console.log('homepPage.jsx componentWillMount')
@@ -32995,7 +32995,7 @@ var HomePage = React.createClass({displayName: "HomePage",
             )
           ), 
 
-          React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : {}}, 
+          React.createElement("div", {className:  this.state.splitted ? "white-nav" : "white-nav before", style:  this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : this.state.scrolledOver === null ? {} : { transition: "none" }}, 
             React.createElement("div", {className: "container"}, 
               React.createElement("div", {className: "row"}, 
                 React.createElement("div", {className: "col-md-12"}, 

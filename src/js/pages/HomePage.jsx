@@ -9,7 +9,7 @@ var scrollTop = (window.pageYOffset || document.scrollTop) - (document.clientTop
 
 var HomePage = React.createClass({
   getInitialState: function() {
-    return { splitted: false, scrolledOver: false };
+    return { splitted: false, scrolledOver: null };
   },
   componentWillMount: function() {
     console.log('homepPage.jsx componentWillMount')
@@ -86,7 +86,7 @@ var HomePage = React.createClass({
             </div>
           </header>
 
-          <div className={ this.state.splitted ? "white-nav" : "white-nav before" } style={ this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : {} }>
+          <div className={ this.state.splitted ? "white-nav" : "white-nav before" } style={ this.state.scrolledOver ? { position: "fixed", top: "0px", transition: "none" } : this.state.scrolledOver === null ? {} : { transition: "none" } }>
             <div className="container">
               <div className="row">
                 <div className="col-md-12">
